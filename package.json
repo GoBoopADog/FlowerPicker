@@ -1,0 +1,13 @@
+{
+  "name": "flowerpicker",
+  "version": "0.1.0",
+  "description": "Data scraper for a certain rhythm game website",
+  "author": "BoopDog",
+  "license": "MIT",
+  "main": "index.js",
+  "module": "index.js",
+  "type": "module",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.12"
+  }
+}
