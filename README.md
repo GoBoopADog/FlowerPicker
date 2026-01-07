@@ -54,7 +54,7 @@ The following games may not be updated by me, PRs may be reviewed and accepted
 
 [^1]: Profile information includes profile id(s) on the site, game display name, and unlock statuses
 
-[^2]: Reading the status of hte unlock  are not currently implemented
+[^2]: Reading the status of the unlock are not currently implemented
 
 [^3]: The Jubility table may or may not be done at a later time
 
