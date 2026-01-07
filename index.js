@@ -94,17 +94,17 @@ class FlowerPicker {
                                     poors: this._trimToNumber($(songTrDiv).find("div:contains('Poors')").text()),
                                     misses: this._trimToNumber($(songTrDiv).find("div:contains('Misses')").text()),
                                 };
+                                let judgeBar = $(songTrDiv).find(".jubeat-bars").attr("data-jubeat-judge").split(" ").map(Number);
                                 let onPage = i;
 
                                 scoreArray.push({
                                     playID, songTitle, songID, songDifficultyID, songIsHardPlay, songChart,
                                     songLetterScore, songNumberScore, songMusicRate, songJubility,
                                     songClearStatus, songMaxCombo, songTimestampString,
-                                    arcadePlayedAtString, arcadePlayedAtID, machinePlayedWithString, scoreData, onPage
+                                    arcadePlayedAtString, arcadePlayedAtID, machinePlayedWithString, scoreData, judgeBar, onPage
                                 });
                             });
 
-                            scoreArray.reverse();
                             this._gameScoreLogs.jubeat.push(...scoreArray); // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax
                         })
                     // FIXME: This one as well
@@ -214,3 +214,4 @@ class FlowerPicker {
 }
 
 export default FlowerPicker;
+export * as convert from "./convert.js";

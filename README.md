@@ -9,7 +9,7 @@ Currently only Jubeat is supported as far as games go.
 
 Below is some example code with their explanations to get started:
 ```js
-import FlowerPicker from "../FlowerPicker/index.js";
+import FlowerPicker, { convert } from "flowerpicker";
 
 // The constructor has 2 parameters: The url to the server dashboard, and your cookie to said dashboard
 const SESSION_COOKIE = "abc123";
@@ -25,6 +25,11 @@ await picker.setupJubeatScoreLog();
 // This is an example of how to export the score log from the package to a text file
 // Temporarily incredibly scuffed as I get the basic functionality up and running
 fs.writeFileSync(`./data/data-${Date.now()}-${picker._gameScoreLogs.jubeat.length}.json`, JSON.stringify(picker._gameScoreLogs.jubeat, null, 2) , 'utf-8');
+
+// To convert an export to a tachi-compatible JSON, you can use the convert module
+// The first parameter is the JSON file, the second what you want the service to show up as imported from
+const convertedJubeat = await picker.convert.jubeatToTachiCompat(JSON.parse(fs.readFileSync(fileName, 'utf-8')), "FlowerPicker-FLO");
+fs.writeFileSync('converted.json', JSON.stringify(convertedJubeat, null, 2), 'utf-8');
 ```
 
 ## Supported data (Accessible via the package)
