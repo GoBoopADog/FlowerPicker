@@ -45,17 +45,17 @@ The following account information is accessible via this package:
 
 The following games may not be updated by me, PRs may be reviewed and accepted
 
-| Game                            | Profile Information[^1] | Score Log | Game Specific Data |
-| :------------------------------ | :---------------------: | :-------: | :----------------: |
-| beatmania IIDX                  |            ❌            |     ❌     |         ❌          |
-| DanceDanceRevolution            |            ❌            |     ❌     |         ❌          |
-| GITADORA                        |            ❌            |     ❌     |         ❌          |
-| Jubeat                          |          ⚠️[^2]          |     ✅     |       ❌[^3]        |
-| NOSTALGIA                       |            ❌            |     ❌     |         ❌          |
-| pop'n music                     |            ❌            |     ❌     |         ❌          |
-| REFLEC BEAT                     |            ❌            |     ❌     |         ❌          |
-| Sound Voltex                    |            ❌            |     ❌     |         ❌          |
-| PASELI Charging Machine (Soon™️) |            ❌            |     ❌     |         ❌          |
+| Game                            | Profile Information[^1] | Score Log | Game Specific Data | Tachi Export |
+| :------------------------------ | :---------------------: | :-------: | :----------------: | :----------: |
+| beatmania IIDX                  |            ❌            |     ❌     |         ❌          |      ❌       |
+| DanceDanceRevolution            |            ❌            |     ❌     |         ❌          |      ❌       |
+| GITADORA                        |            ❌            |     ❌     |         ❌          |      ❌       |
+| Jubeat                          |          ⚠️[^2]          |     ✅     |       ❌[^3]        |      ✅       |
+| NOSTALGIA                       |            ❌            |     ❌     |         ❌          |      ❌       |
+| pop'n music                     |            ❌            |     ❌     |         ❌          |      ❌       |
+| REFLEC BEAT                     |            ❌            |     ❌     |         ❌          |      ❌       |
+| Sound Voltex                    |            ❌            |     ❌     |         ❌          |      ❌       |
+| PASELI Charging Machine (Soon™️) |            ❌            |     ❌     |         ❌          |      ❌       |
 
 [^1]: Profile information includes profile id(s) on the site, game display name, and unlock statuses
 

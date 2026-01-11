@@ -113,6 +113,17 @@ class FlowerPicker {
             });
     }
 
+    async getProfileId(game, id) {
+        const res = await this._fetchWithCookie(`${this._baseURL}/game/${game}/profile/${id}`);
+        const html = await res.text();
+        const $ = cheerio.load(html);
+
+        const href = $("small > a").first().attr("href");
+        if (!href) return null;
+
+        return href.split("/")[4] ?? null;
+    }
+
     async _fetchWithCookie(url) {
         return fetch(url, {
             headers: {
@@ -201,7 +212,7 @@ class FlowerPicker {
                     let walletID = theElement.attr('href')?.split('/').pop();
                     let walletBalance = this._trimToNumber(theElement.children('.list-group-item-text').text());
 
-                    walletIDs.push({arcadeName, walletID, walletBalance});
+                    walletIDs.push({ arcadeName, walletID, walletBalance });
                 });
 
                 return walletIDs;
