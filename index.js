@@ -114,7 +114,7 @@ class FlowerPicker {
     }
 
     async getProfileId(game, id) {
-        const res = await this._fetchWithCookie(`${this._baseURL}/game/${game}/profile/${id}`);
+        const res = await this._fetchWithCookie(`${this._baseURL}/game/${game}${this._doesGameHaveProfileInUrl(game) ? '/profile' : ''}/${id}`);
         const html = await res.text();
         const $ = cheerio.load(html);
 
@@ -122,6 +122,24 @@ class FlowerPicker {
         if (!href) return null;
 
         return href.split("/")[4] ?? null;
+    }
+
+    _doesGameHaveProfileInUrl(game) {
+        switch (game) {
+            case 'iidx':
+            case 'jubeat':
+            case 'rb':
+            case 'gitadora':
+            case 'sdvx':
+            case 'museca':
+                return true;
+            case 'ddr':
+            case 'nostalgia':
+            case 'pnm':
+                return false;
+            default:
+                return null;
+        }
     }
 
     async _fetchWithCookie(url) {
