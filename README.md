@@ -36,22 +36,11 @@ try {
 };
 ```
 
-## Supported data (Accessible via the package)
-The following account information is accessible via this package:
-* Account ID
-* Profile ID
-* Account Petal Wallet IDs ( [arcadeName, walletID, walletBalance] )
-* Profile Info
-  * Name
-  * Email
-  * Home arcade
-  * Date of your first play
-
 The following games may not be updated by me, PRs may be reviewed and accepted
 
 | Game                            | Profile Information[^1] | Score Log | Game Specific Data | Tachi Export |
 | :------------------------------ | :---------------------: | :-------: | :----------------: | :----------: |
-| Jubeat                          |          ⚠️[^2]          |     ✅     |       ❌[^3]        |      ✅       |
+| Jubeat                          |            ❌            |     ✅     |         ❌          |      ✅       |
 | pop'n music                     |            ❌            |     ❌     |         ❌          |      ❌       |
 | NOSTALGIA                       |            ❌            |     ❌     |         ❌          |      ❌       |
 | MÚSECA                          |            ❌            |     ❌     |         ❌          |      ❌       |
@@ -63,11 +52,6 @@ The following games may not be updated by me, PRs may be reviewed and accepted
 | PASELI Charging Machine (Soon™️) |            ❌            |     ❌     |         ❌          |      ❌       |
 
 [^1]: Profile information includes profile id(s) on the site, game display name, and unlock statuses
-
-[^2]: Reading the status of the unlock are not currently implemented
-
-[^3]: The Jubility table may or may not be done at a later time
-
 
 The following games will most likely never be supported by me
 * Beatstream
