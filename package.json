@@ -1,13 +1,23 @@
 {
   "name": "flowerpicker",
-  "version": "0.3.1",
+  "version": "1.0.0",
   "description": "Data scraper for a certain rhythm game website",
   "author": "BoopDog",
   "license": "MIT",
-  "main": "index.js",
-  "module": "index.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "module": "dist/index.js",
   "type": "module",
+  "scripts": {
+    "build": "npx tsc"
+  },
   "dependencies": {
     "cheerio": "^1.0.0-rc.12"
-  }
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3"
+  },
+  "files": [
+    "dist"
+  ]
 }

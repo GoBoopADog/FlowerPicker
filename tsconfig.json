@@ -1,0 +1,30 @@
+{
+    // https://www.totaltypescript.com/tsconfig-cheat-sheet
+    "compilerOptions": {
+        // Base options
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "target": "es2022",
+        "allowJs": true,
+        "resolveJsonModule": true,
+        "moduleDetection": "force",
+        "isolatedModules": true,
+        "verbatimModuleSyntax": true,
+        "lib": [
+            "es2022",
+            "dom",
+            "dom.iterable"
+        ],
+        // Strictness
+        "strict": true,
+        "noUncheckedIndexedAccess": true,
+        "noImplicitOverride": true,
+        // Transpiling
+        "module": "NodeNext",
+        "outDir": "dist",
+        // Types
+        "declaration": true,
+        "sourceMap": true,
+        "declarationMap": true,
+    }
+}

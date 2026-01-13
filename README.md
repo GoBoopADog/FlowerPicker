@@ -1,35 +1,39 @@
 # FlowerPicker
 This project is for getting information from a rhythm game website.
 
-> [!NOTE]
-> This package was made in mind for the non US version of the server/dashboard. If you try to use this package for the US server, you may run into issues!
+> [!WARNING]
+> PLEASE be sure to respect ratelimits when using this package!! I am not responsible for any accidental misuse nor anything that may result from the use of FlowerPicker.
 
 ## Getting Started
 Currently only Jubeat is supported as far as games go.
 
 Below is some example code with their explanations to get started:
 ```js
-import FlowerPicker, { convert } from "flowerpicker";
+import fs from 'fs';
+import FlowerPicker, { convert, error } from "flowerpicker";
 
 // The constructor has 2 parameters: The url to the server dashboard, and your cookie to said dashboard
-const SESSION_COOKIE = "abc123";
+const SESSION_COOKIE = "service_session=abc123";
 const picker = new FlowerPicker('https://server.link', SESSION_COOKIE);
 
-// This verifies the validity of your session cookie and populates the info necessary for the package to function
-// (Besides game IDs, it also gets the info mentioned under the supported data)
-await picker.setup();
+try {
+    // This verifies the validity of your session cookie and throws an error if it's invalid
+    await picker.setup();
 
-// This is an example of how to populate a score log for a game. Currently only Jubeat is supported
-await picker.setupJubeatScoreLog();
+    // Get all jubeat scores for profile ID 12345678 between now and January 1st (Omitting the timestamp will simply get all of the scores)
+    const scores = await picker.getScoreLog("jubeat", "12345678", 1767225600000);
+    console.log(`Fetched ${scores.length} scores.`);
 
-// This is an example of how to export the score log from the package to a text file
-// Temporarily incredibly scuffed as I get the basic functionality up and running
-fs.writeFileSync(`./data/data-${Date.now()}-${picker._gameScoreLogs.jubeat.length}.json`, JSON.stringify(picker._gameScoreLogs.jubeat, null, 2) , 'utf-8');
+    // To convert an export to a tachi-compatible JSON, you can use the convert module
+    const convertedJubeat = await convert.jubeatToTachiCompat(scores);
 
-// To convert an export to a tachi-compatible JSON, you can use the convert module
-// The first parameter is the JSON file, the second what you want the service to show up as imported from
-const convertedJubeat = await picker.convert.jubeatToTachiCompat(JSON.parse(fs.readFileSync(fileName, 'utf-8')), "FlowerPicker-FLO");
-fs.writeFileSync('converted.json', JSON.stringify(convertedJubeat, null, 2), 'utf-8');
+    // Then feel free to do whatever you want with it!
+    fs.writeFileSync(`./jubeat-scorelog.json`, JSON.stringify(convertedJubeat, null, 4), 'utf-8');
+} catch (e) {
+    if (e instanceof error.InvalidSessionCookieError) {
+        console.error("Invalid session cookie provided, please check it and try again.");
+    }
+};
 ```
 
 ## Supported data (Accessible via the package)
@@ -47,12 +51,13 @@ The following games may not be updated by me, PRs may be reviewed and accepted
 
 | Game                            | Profile Information[^1] | Score Log | Game Specific Data | Tachi Export |
 | :------------------------------ | :---------------------: | :-------: | :----------------: | :----------: |
+| Jubeat                          |          ⚠️[^2]          |     ✅     |       ❌[^3]        |      ✅       |
+| pop'n music                     |            ❌            |     ❌     |         ❌          |      ❌       |
+| NOSTALGIA                       |            ❌            |     ❌     |         ❌          |      ❌       |
+| MÚSECA                          |            ❌            |     ❌     |         ❌          |      ❌       |
 | beatmania IIDX                  |            ❌            |     ❌     |         ❌          |      ❌       |
 | DanceDanceRevolution            |            ❌            |     ❌     |         ❌          |      ❌       |
 | GITADORA                        |            ❌            |     ❌     |         ❌          |      ❌       |
-| Jubeat                          |          ⚠️[^2]          |     ✅     |       ❌[^3]        |      ✅       |
-| NOSTALGIA                       |            ❌            |     ❌     |         ❌          |      ❌       |
-| pop'n music                     |            ❌            |     ❌     |         ❌          |      ❌       |
 | REFLEC BEAT                     |            ❌            |     ❌     |         ❌          |      ❌       |
 | Sound Voltex                    |            ❌            |     ❌     |         ❌          |      ❌       |
 | PASELI Charging Machine (Soon™️) |            ❌            |     ❌     |         ❌          |      ❌       |
@@ -66,9 +71,7 @@ The following games may not be updated by me, PRs may be reviewed and accepted
 
 The following games will most likely never be supported by me
 * Beatstream
-* DanceEvolution ARCADE
 * DANCERUSH
-* Future TomTom
-* GuitarFreaks & DrumMania
-* HELLO! POP'N MUSIC
-* MÚSECA
+
+> [!NOTE]
+> This package was made in mind for the non US version of the server/dashboard. If you try to use this package for the US server, you may run into issues!
