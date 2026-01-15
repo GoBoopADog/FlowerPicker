@@ -56,6 +56,8 @@ class FlowerPicker {
             throw new Error(`Game "${game}" is not supported.`);
         }
 
+        if (fetchDownTo > 0) { console.log(`Fetching scores down to timestamp: ${new Date(fetchDownTo).toISOString()}`) } else { console.log(`Fetching all scores without a down-to limit.`); }
+
         let url = `${this.baseURL}/game/${game}/profile/${profileID}?page=`;
         const firstFetchedPage = await this.fetchWithCookie(`${url}1`)
         const firstFullPage = await firstFetchedPage.text();
