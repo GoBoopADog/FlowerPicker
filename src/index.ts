@@ -14,6 +14,10 @@ class FlowerPicker {
         this.cookie = cookieSessionIDValue;
     }
 
+    /**
+     * Makes sure the cookie that was provided is actually valid
+     * @throws {error.InvalidSessionCookieError} When the provided session cookie is invalid
+     */
     async setup() {
         await this.fetchWithCookie(`${this.baseURL}/user`)
             .then((response) => {
@@ -24,12 +28,32 @@ class FlowerPicker {
             });
     }
 
+    /**
+     * 
+     * @param url The url to fetch from
+     * @returns The completed fetch Response
+     * @throws {error.TooManyRatelimitErrors} If the server returns too many 429 responses
+     */
     private async fetchWithCookie(url: string): Promise<Response> {
-        return fetch(url, {
-            headers: {
-                cookie: this.cookie,
+        const retryCount = 3;
+        let delayBetweenRetriesMs = 1000;
+
+        for (let attempt = 1; attempt <= retryCount; attempt++) {
+            const res = await fetch(url, {
+                headers: {
+                    cookie: this.cookie,
+                }
+            });
+
+            if (res.status === 200) {
+                return res;
+            } else if (attempt <= retryCount) {
+                console.warn(`Fetch attempt ${attempt} for ${url} failed with status ${res.status}. Retrying...`);
+                await util.delay(delayBetweenRetriesMs);
+                delayBetweenRetriesMs *= 2;
             }
-        });
+        }
+        throw new error.TooManyRatelimitErrors(`Failed to fetch ${url} after ${retryCount} attempts.`);
     }
 
     public async getProfileId(game: string, id: string): Promise<string | null> {

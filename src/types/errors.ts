@@ -4,3 +4,10 @@ export class InvalidSessionCookieError extends Error {
         this.name = "InvalidSessionCookieError";
     }
 }
+
+export class TooManyRatelimitErrors extends Error {
+    constructor(message: string = "The server returned 429 too often, aborting further requests") {
+        super(message);
+        this.name = "TooManyRatelimitErrors";
+    }
+}
