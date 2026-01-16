@@ -26,3 +26,27 @@ export interface JubeatDataRawJSON {
     judgeBar: number[]
     onPage: number
 }
+
+export interface PnmDataRawJSON {
+    playID: number
+    songTitle: string
+    songArtist: string
+    songID: number
+    songDifficultyID: string
+    songChart: string
+    songMedal: number
+    songLetterScore: string
+    songNumberScore: string
+    songTimestampString: string
+    exScore: number
+    arcadePlayedAtString: string
+    arcadePlayedAtID: number
+    machinePlayedWithString: string
+    scoreData: {
+        cool: number
+        great: number
+        good: number
+        bad: number
+    }
+    onPage: number
+}

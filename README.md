@@ -20,7 +20,7 @@ try {
     // This verifies the validity of your session cookie and throws an error if it's invalid
     await picker.setup();
 
-    // Get all jubeat scores for profile ID 12345678 between now and January 1st 2025 (Omitting the timestamp will simply get all of the scores)
+    // Get all jubeat scores for profile ID 12345678 between now and January 1st 2026 (Omitting the timestamp will simply get all of the scores)
     const scores = await picker.getScoreLog("jubeat", "12345678", 1767225600000);
     console.log(`Fetched ${scores.length} scores.`);
 
@@ -28,7 +28,7 @@ try {
     const convertedJubeat = await convert.jubeatToTachiCompat(scores);
 
     // Then feel free to do whatever you want with it!
-    fs.writeFileSync(`./jubeat-scorelog.json`, JSON.stringify(convertedJubeat, null, 4), 'utf-8');
+    fs.writeFileSync(`./jubeat-scorelog-tachi.json`, JSON.stringify(convertedJubeat, null, 4), 'utf-8');
 } catch (e) {
     if (e instanceof error.InvalidSessionCookieError) {
         console.error("Invalid session cookie provided, please check it and try again.");
@@ -41,7 +41,7 @@ The following games may not be updated by me, PRs may be reviewed and accepted
 | Game                            | Profile Information[^1] | Score Log | Game Specific Data | Tachi Export |
 | :------------------------------ | :---------------------: | :-------: | :----------------: | :----------: |
 | Jubeat                          |            ❌            |     ✅     |         ❌          |      ✅       |
-| pop'n music                     |            ❌            |     ❌     |         ❌          |      ❌       |
+| pop'n music                     |            ❌            |     ✅     |         ❌          |      ✅       |
 | NOSTALGIA                       |            ❌            |     ❌     |         ❌          |      ❌       |
 | MÚSECA                          |            ❌            |     ❌     |         ❌          |      ❌       |
 | beatmania IIDX                  |            ❌            |     ❌     |         ❌          |      ❌       |

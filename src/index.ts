@@ -5,6 +5,13 @@ import * as util from "./util.js";
 
 import * as cheerio from "cheerio";
 
+const GAMES = ['iidx', 'jubeat', 'rb', 'gitadora', 'sdvx', 'museca', 'ddr', 'nostalgia', 'pnm'] as const;
+type Game = typeof GAMES[number];
+type ScoreForGame<G extends Game> =
+    G extends "jubeat" ? ReturnType<typeof parser.parseJubeatScoreData> :
+    G extends "pnm" ? ReturnType<typeof parser.parsePnmScoreData> :
+    never;
+
 class FlowerPicker {
     private baseURL: string;
     private cookie: string;
@@ -73,16 +80,19 @@ class FlowerPicker {
      * @param profileID The profile ID to fetch from
      * @param fetchDownTo Millisecond timestamp of the last score you want to fetch (inclusive)
     */
-    public async getScoreLog(game: string, profileID: string, fetchDownTo: number = 0, msTimeout: number = 1000): Promise<common.JubeatDataRawJSON[]> {
-        const Games = ['iidx', 'jubeat', 'rb', 'gitadora', 'sdvx', 'museca', 'ddr', 'nostalgia', 'pnm'];
-
-        if (!Games.includes(game)) {
+    public async getScoreLog<G extends Game>(
+        game: G,
+        profileID: string,
+        fetchDownTo: number = 0,
+        msTimeout: number = 1000
+    ): Promise<Array<ScoreForGame<G>>> {
+        if (!GAMES.includes(game)) {
             throw new Error(`Game "${game}" is not supported.`);
         }
 
         if (fetchDownTo > 0) { console.log(`Fetching scores down to timestamp: ${new Date(fetchDownTo).toISOString()}`) } else { console.log(`Fetching all scores without a down-to limit.`); }
 
-        let url = `${this.baseURL}/game/${game}/profile/${profileID}?page=`;
+        let url = `${this.baseURL}/game/${game}${util.doesGameHaveProfileInUrl(game) ? '/profile' : ''}/${profileID}?page=`;
         const firstFetchedPage = await this.fetchWithCookie(`${url}1`)
         const firstFullPage = await firstFetchedPage.text();
         const first$ = cheerio.load(firstFullPage);
@@ -91,7 +101,7 @@ class FlowerPicker {
         const totalPagesRaw = parseInt(first$scoreLogGeneric.find('div.text-center > ul.pagination > li:nth-last-child(2) > a').first().text());
         const totalPages = isNaN(totalPagesRaw) ? 1 : totalPagesRaw;
 
-        const allScores: common.JubeatDataRawJSON[] = [];
+        const allScores: Array<ScoreForGame<G>> = [];
 
         let stop = false;
 
@@ -112,10 +122,23 @@ class FlowerPicker {
             for (let index = indexStart; index < $scoreLog.toArray().length; index += 2) {
                 const element = $scoreLog.toArray()[index];
                 const elementCollapsed = $scoreLog.toArray()[index + 1];
-                const score = parser.parseJubeatScoreData(element!, elementCollapsed!, pageIndex);
-                if (!element || !elementCollapsed) continue;
+                let score;
 
-                // console.log(`Is ${new Date(score.songTimestampString).getTime()} < ${fetchDownTo}?: ${new Date(score.songTimestampString).getTime() < fetchDownTo}`);
+                if (!element || !elementCollapsed) {
+                    continue;
+                }
+
+                switch (game) {
+                    case "jubeat":
+                        score = parser.parseJubeatScoreData(element, elementCollapsed, pageIndex) as ScoreForGame<G>;
+                        break;
+                    case "pnm":
+                        score = parser.parsePnmScoreData(element, elementCollapsed, pageIndex) as ScoreForGame<G>;
+                        break;
+                    default:
+                        throw new Error(`Parser not implemented for game "${game}".`);
+                }
+
                 if (new Date(score.songTimestampString).getTime() < fetchDownTo) {
                     console.log(`Reached fetch down to timestamp at score played on "${score.songTimestampString}", stopping fetch.`);
                     stop = true;

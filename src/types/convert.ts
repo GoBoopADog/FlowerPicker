@@ -29,7 +29,7 @@ export type BatchManualMeta = {
 }[GameName];
 
 // https://docs.tachi.ac/codebase/batch-manual
-export type BatchManualScores = {
+export type BatchManualScoresJubeat = {
     score: number,
     /**
      * The lamp for this score. This should be one of the lamps as described in the config for your game + playtype.
@@ -44,7 +44,7 @@ export type BatchManualScores = {
      */
     musicRate?: number,
     /**  This determines how identifier will be used to match your scores' chart with Tachi's database of songs and charts.*/
-    matchType: "songTitle" | "tachiSongID" | "bmsChartHash" | "uscChartHash" | "inGameID" | "ddrSongHash",
+    matchType: "inGameID" | "tachiSongID",
     /** A string that Tachi uses to identify what chart this is for. How this is used depends on the matchType.*/
     identifier: string,
     /**
@@ -67,7 +67,25 @@ export type BatchManualScores = {
     scoreMeta?: any;
 }
 
-export interface BatchManualJSON {
+export interface BatchManualJSONJubeat {
     meta: BatchManualMeta;
-    scores: BatchManualScores[];
+    scores: BatchManualScoresJubeat[];
+}
+
+export interface BatchManualScoresPnm {
+    score: number,
+    /**
+     * The clear medal for this score. This should be one of the medals as described in the config for your game + playtype.
+     */
+    clearMedal: string,
+    judgements: any,
+    difficulty: string,
+    matchType: "inGameID" | "tachiSongID" | "popnChartHash",
+    identifier: string,
+    timeAchieved?: number | null,
+}
+
+export interface BatchManualJSONPnm {
+    meta: BatchManualMeta;
+    scores: BatchManualScoresPnm[];
 }
