@@ -169,5 +169,5 @@ class FlowerPicker {
 export default FlowerPicker;
 export * as convert from "./convert.js";
 export * as error from "./types/errors.js";
-export * as common from "./types/scorelogJson.js";
+export * as scorelogJson from "./types/scorelogJson.js";
 // export * as util from "./util";
