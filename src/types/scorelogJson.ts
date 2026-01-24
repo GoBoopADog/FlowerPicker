@@ -1,4 +1,3 @@
-// Game JSONs
 export interface JubeatDataRawJSON {
     playID: number
     songTitle: string
@@ -47,6 +46,30 @@ export interface PnmDataRawJSON {
         great: number
         good: number
         bad: number
+    }
+    onPage: number
+}
+
+export interface MusecaDataRawJSON {
+    playID: number
+    songTitle: string
+    songID: number
+    songDifficultyID: string
+    songChart: string
+    songNumberScore: string
+    songGradeKanji: string
+    songLampText: string
+    songMaxCombo: number
+    songTimestampString: string
+    arcadePlayedAtString: string
+    arcadePlayedAtID: number
+    machinePlayedWithString: string
+    // I'm not 100% sure how the story mode/missions work, nor what the extra graficas are, so I'll just be using the string to determine if it's a story play or not
+    missionString: string | null
+    scoreData: {
+        critical: number
+        near: number
+        error: number
     }
     onPage: number
 }

@@ -1,15 +1,14 @@
+import * as cheerio from "cheerio";
 import * as parser from "./parser.js";
-import * as common from "./types/common.js";
 import * as error from "./types/errors.js";
 import * as util from "./util.js";
-
-import * as cheerio from "cheerio";
 
 const GAMES = ['iidx', 'jubeat', 'rb', 'gitadora', 'sdvx', 'museca', 'ddr', 'nostalgia', 'pnm'] as const;
 type Game = typeof GAMES[number];
 type ScoreForGame<G extends Game> =
     G extends "jubeat" ? ReturnType<typeof parser.parseJubeatScoreData> :
     G extends "pnm" ? ReturnType<typeof parser.parsePnmScoreData> :
+    G extends "museca" ? ReturnType<typeof parser.parseMusecaScoreData> :
     never;
 
 class FlowerPicker {
@@ -135,6 +134,9 @@ class FlowerPicker {
                     case "pnm":
                         score = parser.parsePnmScoreData(element, elementCollapsed, pageIndex) as ScoreForGame<G>;
                         break;
+                    case "museca":
+                        score = parser.parseMusecaScoreData(element, elementCollapsed, pageIndex) as ScoreForGame<G>;
+                        break;
                     default:
                         throw new Error(`Parser not implemented for game "${game}".`);
                 }
@@ -167,4 +169,5 @@ class FlowerPicker {
 export default FlowerPicker;
 export * as convert from "./convert.js";
 export * as error from "./types/errors.js";
+export * as common from "./types/scorelogJson.js";
 // export * as util from "./util";

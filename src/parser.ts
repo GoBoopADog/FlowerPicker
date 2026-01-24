@@ -1,14 +1,13 @@
-import * as common from "./types/common.js";
+import * as cheerio from "cheerio";
+import * as scorelogJson from "./types/scorelogJson.js";
 import * as util from "./util.js";
 
-import * as cheerio from "cheerio";
-
-export function parseJubeatScoreData(mainElement: cheerio.Element, collapsedElement: cheerio.Element, pageIndex: number): common.JubeatDataRawJSON {
+export function parseJubeatScoreData(mainElement: cheerio.Element, collapsedElement: cheerio.Element, pageIndex: number): scorelogJson.JubeatDataRawJSON {
     const $ = cheerio.load('');
     const $main = $(mainElement);
     const $collapsed = $(collapsedElement).find('td > div > div');
 
-    const rawData: common.JubeatDataRawJSON = {
+    const rawData: scorelogJson.JubeatDataRawJSON = {
         playID: util.trimToNumber($main.attr('data-target')!),
         songTitle: $main.find('td > a > b').text(),
         songID: util.trimToNumber($main.find('td > a').attr('href')!.split('/')[7]!),
@@ -40,12 +39,12 @@ export function parseJubeatScoreData(mainElement: cheerio.Element, collapsedElem
     return rawData;
 }
 
-export function parsePnmScoreData(mainElement: cheerio.Element, collapsedElement: cheerio.Element, pageIndex: number): common.PnmDataRawJSON {
+export function parsePnmScoreData(mainElement: cheerio.Element, collapsedElement: cheerio.Element, pageIndex: number): scorelogJson.PnmDataRawJSON {
     const $ = cheerio.load('');
     const $main = $(mainElement);
     const $collapsed = $(collapsedElement).find('td > div > div');
 
-    const rawData = {
+    const rawData: scorelogJson.PnmDataRawJSON = {
         playID: util.trimToNumber($main.attr('data-target')!),
         songTitle: $main.find('td > a > b').text(),
         songArtist: $main.children('td').eq(0).find('small').text().trim(),
@@ -66,6 +65,38 @@ export function parsePnmScoreData(mainElement: cheerio.Element, collapsedElement
             great: util.trimToNumber($collapsed.find("div:contains('Great')").eq(1).text()),
             good: util.trimToNumber($collapsed.find("div:contains('Good')").text()),
             bad: util.trimToNumber($collapsed.find("div:contains('Bad')").text()),
+        },
+        onPage: pageIndex,
+    };
+
+    return rawData;
+}
+
+export function parseMusecaScoreData(mainElement: cheerio.Element, collapsedElement: cheerio.Element, pageIndex: number): scorelogJson.MusecaDataRawJSON {
+    const $ = cheerio.load('');
+    const $main = $(mainElement);
+    const $collapsed = $(collapsedElement).find('td > div > div');
+
+    const rawData: scorelogJson.MusecaDataRawJSON = {
+        playID: util.trimToNumber($main.attr('data-target')!),
+        songTitle: $main.find('td > a > b').text(),
+        songID: util.trimToNumber($main.find('td > a').attr('href')!.split('/')[7]!),
+        songDifficultyID: $main.find('td > a').attr('href')!.split('/').pop()!,
+        songChart: $main.children('td').eq(2).text().trim().replace(/\s+/g, ''),
+        songNumberScore: $main.children('td').eq(3).find('strong').text().trim(),
+        songGradeKanji: $main.children('td').eq(4).find('strong').text().trim(),
+        songLampText: $main.children('td').eq(5).find('strong').text().trim(),
+        songMaxCombo: util.trimToNumber($main.children('td').eq(6).find('strong').text().trim()),
+        songTimestampString: $main.children('td').eq(7).find('small').text().trim(),
+
+        arcadePlayedAtString: $collapsed.find("div:contains('Played at') > a").text().replace('Played at', '').trim(),
+        arcadePlayedAtID: util.trimToNumber($collapsed.find("div:contains('Played at') > a").attr('href')?.split('/').pop()!),
+        machinePlayedWithString: $collapsed.find("div:contains('Played with')").text().replace('Played with', '').trim(),
+        missionString: $collapsed.find("h4.media-heading").text().trim() || null,
+        scoreData: {
+            critical: util.trimToNumber($collapsed.find("div:contains('Critical')").text()),
+            near: util.trimToNumber($collapsed.find("div:contains('Near')").text()),
+            error: util.trimToNumber($collapsed.find("div:contains('Error')").text()),
         },
         onPage: pageIndex,
     };

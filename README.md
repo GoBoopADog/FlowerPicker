@@ -42,8 +42,8 @@ The following games may not be updated by me, PRs may be reviewed and accepted
 | :------------------------------ | :---------------------: | :-------: | :----------------: | :----------: |
 | Jubeat                          |            ❌            |     ✅     |         ❌          |      ✅       |
 | pop'n music                     |            ❌            |     ✅     |         ❌          |      ✅       |
+| MÚSECA                          |            ❌            |   ✅[^2]   |         ❌          |      ✅       |
 | NOSTALGIA                       |            ❌            |     ❌     |         ❌          |      ❌       |
-| MÚSECA                          |            ❌            |     ❌     |         ❌          |      ❌       |
 | beatmania IIDX                  |            ❌            |     ❌     |         ❌          |      ❌       |
 | DanceDanceRevolution            |            ❌            |     ❌     |         ❌          |      ❌       |
 | GITADORA                        |            ❌            |     ❌     |         ❌          |      ❌       |
@@ -52,6 +52,7 @@ The following games may not be updated by me, PRs may be reviewed and accepted
 | PASELI Charging Machine (Soon™️) |            ❌            |     ❌     |         ❌          |      ❌       |
 
 [^1]: Profile information includes profile id(s) on the site, game display name, and unlock statuses
+[^2]: Does not get the graficas from a mission, otherwise gets everything else
 
 The following games will most likely never be supported by me
 * Beatstream

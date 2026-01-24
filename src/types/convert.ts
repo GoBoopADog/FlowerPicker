@@ -89,3 +89,19 @@ export interface BatchManualJSONPnm {
     meta: BatchManualMeta;
     scores: BatchManualScoresPnm[];
 }
+
+export interface BatchManualScoresMuseca {
+    score: number,
+    lamp: string,
+    judgements: any,
+    difficulty: string,
+    matchType: "songTitle" | "tachiSongID" | "inGameID",
+    identifier: string,
+    optional?: any,
+    timeAchieved?: number | null,
+}
+
+export interface BatchManualJSONMuseca {
+    meta: BatchManualMeta;
+    scores: BatchManualScoresMuseca[];
+}

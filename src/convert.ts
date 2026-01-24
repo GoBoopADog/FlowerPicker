@@ -1,9 +1,11 @@
-import type { JubeatDataRawJSON, PnmDataRawJSON } from "./types/common.ts";
-import type { BatchManualJSONJubeat, BatchManualJSONPnm } from "./types/convert.ts";
+// import type { JubeatDataRawJSON, PnmDataRawJSON } from "./types/scorelogJson.js";
+import type * as convertType from "./types/convert.js";
+import type * as scorelogJson from "./types/scorelogJson.js";
+import { trimToNumber } from "./util.js";
 
-export function jubeatToTachiCompat(jubeatDataJSON: JubeatDataRawJSON[], service?: string) {
+export function jubeatToTachiCompat(jubeatDataJSON: scorelogJson.JubeatDataRawJSON[], service?: string): convertType.BatchManualJSONJubeat {
     // Thank you to https://gist.github.com/Meta-link/d01c15fc56a277becc7d67a7c1dccfa2 for the tachi structure
-    let tachiCompJson: BatchManualJSONJubeat = {
+    let tachiCompJson: convertType.BatchManualJSONJubeat = {
         meta: {
             "game": "jubeat",
             "playtype": "Single",
@@ -12,7 +14,7 @@ export function jubeatToTachiCompat(jubeatDataJSON: JubeatDataRawJSON[], service
         scores: []
     };
 
-    jubeatDataJSON.forEach((item: JubeatDataRawJSON) => {
+    jubeatDataJSON.forEach((item: scorelogJson.JubeatDataRawJSON) => {
         tachiCompJson.scores.push({
             "score": Number(item.songNumberScore),
             "lamp": item.songClearStatus.toUpperCase(), // Values returned by the scraper are the same, just not in uppercase
@@ -38,9 +40,9 @@ export function jubeatToTachiCompat(jubeatDataJSON: JubeatDataRawJSON[], service
     return tachiCompJson;
 }
 
-export function pnmToTachiCompat(pnmDataJSON: PnmDataRawJSON[], service?: string) {
+export function pnmToTachiCompat(pnmDataJSON: scorelogJson.PnmDataRawJSON[], service?: string): convertType.BatchManualJSONPnm {
     // Thank you to https://github.com/HutchyBen/flower-tachi/blob/main/games/popn.py for helping me figure out how to parse the lamp thing
-    let tachiCompJson: BatchManualJSONPnm = {
+    let tachiCompJson: convertType.BatchManualJSONPnm = {
         meta: {
             "game": "popn",
             "playtype": "9B",
@@ -49,7 +51,7 @@ export function pnmToTachiCompat(pnmDataJSON: PnmDataRawJSON[], service?: string
         scores: []
     };
 
-    pnmDataJSON.forEach((item: PnmDataRawJSON) => {
+    pnmDataJSON.forEach((item: scorelogJson.PnmDataRawJSON) => {
         if (item.songChart.includes("BATTLE")) return; // Battle charts are not supported by Tachi
 
         const medals = ["error", "failedCircle", "failedDiamond", "failedStar", "easyClear", "clearCircle", "clearDiamond", "clearStar", "fullComboCircle", "fullComboDiamond", "fullComboStar", "perfect"];
@@ -73,6 +75,61 @@ export function pnmToTachiCompat(pnmDataJSON: PnmDataRawJSON[], service?: string
             "matchType": "inGameID",
             "identifier": item.songID.toString(),
             "timeAchieved": Math.floor(new Date(item.songTimestampString).getTime()),
+        });
+    });
+
+    return tachiCompJson;
+}
+
+export function musecaToTachiCompat(musecaDataJSON: scorelogJson.MusecaDataRawJSON[], service?: string): convertType.BatchManualJSONMuseca {
+    let tachiCompJson: convertType.BatchManualJSONMuseca = {
+        meta: {
+            "game": "museca",
+            "playtype": "Single",
+            "service": service ? service : "FlowerPicker",
+        },
+        scores: []
+    };
+
+    musecaDataJSON.forEach((item: scorelogJson.MusecaDataRawJSON) => {
+        let parsedLamp = item.songLampText;
+        let parsedDifficulty;
+
+        if (parsedLamp === "CLEARED") parsedLamp = "CLEAR";
+        // https://github.com/zkldi/Tachi/blob/a2f71ffcb38240089f2a0c1168ccd72afa566826/server/src/game-implementations/games/museca.ts#L75
+        if (trimToNumber(item.songNumberScore) === 1000000) parsedLamp = "PERFECT CONNECT ALL";
+        if (trimToNumber(item.songNumberScore) < 800000) parsedLamp = "FAILED";
+        if (trimToNumber(item.songNumberScore) >= 800000 && parsedLamp === "FAILED") parsedLamp = "CLEAR";
+
+        switch (item.songChart.charAt(0)) {
+            case "翠":
+                parsedDifficulty = "Green";
+                break;
+            case "橙":
+                parsedDifficulty = "Yellow";
+                break;
+            case "朱":
+                parsedDifficulty = "Red";
+                break;
+            default:
+                parsedDifficulty = "ERROR";
+        }
+
+        tachiCompJson.scores.push({
+            "score": trimToNumber(item.songNumberScore),
+            "lamp": parsedLamp,
+            "judgements": {
+                "critical": item.scoreData.critical,
+                "near": item.scoreData.near,
+                "miss": item.scoreData.error,
+            },
+            "difficulty": parsedDifficulty,
+            "matchType": "inGameID",
+            "identifier": item.songID.toString(),
+            "timeAchieved": Math.floor(new Date(item.songTimestampString).getTime()),
+            optional: {
+                "maxCombo": item.songMaxCombo,
+            },
         });
     });
 
