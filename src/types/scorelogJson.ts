@@ -1,3 +1,4 @@
+//TODO: Make the variables more consistent (Anything relating to the song itself should start with song, play with play, etc) - Started a bit with gitadora but still needs work
 export interface JubeatDataRawJSON {
     playID: number
     songTitle: string
@@ -71,5 +72,37 @@ export interface MusecaDataRawJSON {
         near: number
         error: number
     }
+    onPage: number
+}
+
+export interface GitadoraDataRawJSON {
+    playID: number
+    songTitle: string
+    songID: number
+    songDifficultyID: number
+    playinstrumentId: number
+    playInstrumentString: string
+    songDifficultyNumber: string
+    songDifficultyString: string
+    playLetter: string
+    playSkillRating: string
+    playPercentageScore: string
+    playLamp: string
+    songTimestampString: string // Needs changing to play but can't because TS wants to complain
+
+    playScore: number
+    arcadePlayedAtString: string
+    arcadePlayedAtID: number
+    machinePlayedWithString: string
+    playMaxCombo: number
+    scoreData: {
+        perfect: number
+        great: number
+        good: number
+        ok: number
+        miss: number
+    }
+    playBar: any[]
+
     onPage: number
 }

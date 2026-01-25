@@ -9,6 +9,7 @@ type ScoreForGame<G extends Game> =
     G extends "jubeat" ? ReturnType<typeof parser.parseJubeatScoreData> :
     G extends "pnm" ? ReturnType<typeof parser.parsePnmScoreData> :
     G extends "museca" ? ReturnType<typeof parser.parseMusecaScoreData> :
+    G extends "gitadora" ? ReturnType<typeof parser.parseGitadoraScoreData> :
     never;
 
 class FlowerPicker {
@@ -136,6 +137,9 @@ class FlowerPicker {
                         break;
                     case "museca":
                         score = parser.parseMusecaScoreData(element, elementCollapsed, pageIndex) as ScoreForGame<G>;
+                        break;
+                    case "gitadora":
+                        score = parser.parseGitadoraScoreData(element, elementCollapsed, pageIndex) as ScoreForGame<G>;
                         break;
                     default:
                         throw new Error(`Parser not implemented for game "${game}".`);

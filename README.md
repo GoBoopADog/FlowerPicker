@@ -38,25 +38,24 @@ try {
 
 The following games may not be updated by me, PRs may be reviewed and accepted
 
-| Game                            | Profile Information[^1] | Score Log | Game Specific Data | Tachi Export |
-| :------------------------------ | :---------------------: | :-------: | :----------------: | :----------: |
-| Jubeat                          |            ❌            |     ✅     |         ❌          |      ✅       |
-| pop'n music                     |            ❌            |     ✅     |         ❌          |      ✅       |
-| MÚSECA                          |            ❌            |   ✅[^2]   |         ❌          |      ✅       |
-| NOSTALGIA                       |            ❌            |     ❌     |         ❌          |      ❌       |
-| beatmania IIDX                  |            ❌            |     ❌     |         ❌          |      ❌       |
-| DanceDanceRevolution            |            ❌            |     ❌     |         ❌          |      ❌       |
-| GITADORA                        |            ❌            |     ❌     |         ❌          |      ❌       |
-| REFLEC BEAT                     |            ❌            |     ❌     |         ❌          |      ❌       |
-| Sound Voltex                    |            ❌            |     ❌     |         ❌          |      ❌       |
-| PASELI Charging Machine (Soon™️) |            ❌            |     ❌     |         ❌          |      ❌       |
+| Game                            | Score Log | TachiExport |
+| :------------------------------ | :-------: | :---------: |
+| Jubeat                          |     ✅     |      ✅      |
+| pop'n music                     |     ✅     |      ✅      |
+| MÚSECA                          |   ✅[^1]   |      ✅      |
+| GITADORA                        |     ✅     |      ✅      |
+| DanceDanceRevolution            |     ❌     |      ❌      |
+| Sound Voltex                    |     ❌     |      ❌      |
+| beatmania IIDX                  |     ❌     |      ❌      |
+| NOSTALGIA                       |     ❌     |      -      |
+| REFLEC BEAT                     |     ❌     |      -      |
+| DANCERUSH STARDOM               |     ❌     |      -      |
+| PASELI Charging Machine (Soon™️) |     ❌     |      ❌      |
 
-[^1]: Profile information includes profile id(s) on the site, game display name, and unlock statuses
-[^2]: Does not get the graficas from a mission, otherwise gets everything else
+[^1]: Does not get the graficas from a mission, otherwise gets everything else
 
-The following games will most likely never be supported by me
-* Beatstream
-* DANCERUSH
+The following games will most likely never be supported by me (If they even can be)
+* BeatStream
 
 > [!NOTE]
 > This package was made in mind for the non US version of the server/dashboard. If you try to use this package for the US server, you may run into issues!

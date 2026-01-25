@@ -1,4 +1,3 @@
-// import type { JubeatDataRawJSON, PnmDataRawJSON } from "./types/scorelogJson.js";
 import type * as convertType from "./types/convert.js";
 import type * as scorelogJson from "./types/scorelogJson.js";
 import { trimToNumber } from "./util.js";
@@ -129,6 +128,43 @@ export function musecaToTachiCompat(musecaDataJSON: scorelogJson.MusecaDataRawJS
             "timeAchieved": Math.floor(new Date(item.songTimestampString).getTime()),
             optional: {
                 "maxCombo": item.songMaxCombo,
+            },
+        });
+    });
+
+    return tachiCompJson;
+}
+
+export function gitadoraToTachiCompat(gitadoraDataJSON: scorelogJson.GitadoraDataRawJSON[], playtype: "Gita" | "Dora", service?: string): convertType.BatchManualJSONGitadora {
+    let tachiCompJson: convertType.BatchManualJSONGitadora = {
+        meta: {
+            "game": "gitadora",
+            "playtype": playtype,
+            "service": service ? service : "FlowerPicker",
+        },
+        scores: []
+    };
+    gitadoraDataJSON.forEach((item: scorelogJson.GitadoraDataRawJSON) => {
+        if (playtype === "Gita" && item.playInstrumentString === "Drum") return;
+        if (playtype === "Dora" && item.playInstrumentString !== "Drum") return;
+
+        tachiCompJson.scores.push({
+            percent: Number(item.playPercentageScore.replace('%', '')),
+            lamp: item.playLamp.toUpperCase(),
+            judgements: {
+                perfect: item.scoreData.perfect,
+                great: item.scoreData.great,
+                good: item.scoreData.good,
+                ok: item.scoreData.ok,
+                miss: item.scoreData.miss,
+            },
+
+            difficulty: (item.playInstrumentString === "Bass" ? "BASS " : "") + item.songDifficultyString.toUpperCase(),
+            matchType: "inGameID",
+            identifier: item.songID.toString(),
+            timeAchieved: Math.floor(new Date(item.songTimestampString).getTime()),
+            optional: {
+                maxCombo: item.playMaxCombo,
             },
         });
     });

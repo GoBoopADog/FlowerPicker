@@ -105,3 +105,19 @@ export interface BatchManualJSONMuseca {
     meta: BatchManualMeta;
     scores: BatchManualScoresMuseca[];
 }
+
+export interface BatchManualScoresGitadora {
+    percent: number,
+    lamp: string,
+    judgements: any,
+    difficulty: string,
+    matchType: "inGameID" | "songTitle" | "tachiSongID",
+    identifier: string,
+    optional?: any,
+    timeAchieved?: number | null,
+}
+
+export interface BatchManualJSONGitadora {
+    meta: BatchManualMeta;
+    scores: BatchManualScoresGitadora[];
+}

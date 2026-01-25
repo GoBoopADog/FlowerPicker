@@ -103,3 +103,58 @@ export function parseMusecaScoreData(mainElement: cheerio.Element, collapsedElem
 
     return rawData;
 }
+export function parseGitadoraScoreData(mainElement: cheerio.Element, collapsedElement: cheerio.Element, pageIndex: number): scorelogJson.GitadoraDataRawJSON {
+    const $ = cheerio.load('');
+    const $main = $(mainElement);
+    const $collapsed = $(collapsedElement).find('td > div > div');
+
+    const rawData: scorelogJson.GitadoraDataRawJSON = {
+        playID: util.trimToNumber($main.attr('data-target')!),
+        songTitle: $main.find('td > a > strong').text(),
+        // Url is /music/version?/songID/instrument/difficulty
+        // 0 is drum, 1 is guitar, 2 is bass
+        songID: util.trimToNumber($main.find('td > a').attr('href')!.split('/')[7]!),
+        songDifficultyID: util.trimToNumber($main.find('td > a').attr('href')!.split('/')[9]!),
+        playinstrumentId: util.trimToNumber($main.find('td > a').attr('href')!.split('/')[8]!),
+        playInstrumentString: $main.children('td').eq(2).text().trim().split('\n')[0]!,
+        songDifficultyNumber: $main.children('td').eq(2).find('strong').text().trim(),
+        songDifficultyString: $main.children('td').eq(2).text().trim().split('\n').at(-1)!.trim(),
+        playLetter: $main.children('td').eq(3).find('strong').text().trim(),
+        playSkillRating: $main.children('td').eq(4).find('strong').text().trim(),
+        playPercentageScore: $main.children('td').eq(4).find('small').text().trim(),
+        playLamp: $main.children('td').eq(5).find('strong').text().trim(),
+        songTimestampString: $main.children('td').eq(6).find('small').text().trim(),
+
+        playScore: util.trimToNumber($collapsed.find("div:contains('Score')").text().trim()),
+        arcadePlayedAtString: $collapsed.find("div:contains('Played at') > div > a").text().replace('Played at', '').trim(),
+        arcadePlayedAtID: util.trimToNumber($collapsed.find("div:contains('Played at') > div > a").attr('href')?.split('/').pop()!),
+        machinePlayedWithString: $collapsed.find("div:contains('Played with')").text().replace('Played with', '').trim(),
+        playMaxCombo: util.trimToNumber($collapsed.find("div:contains('Max combo')").text().trim()),
+        scoreData: {
+            perfect: util.trimToNumber($collapsed.find("div:contains('Perfect')").text()),
+            great: util.trimToNumber($collapsed.find("div:contains('Great')").text()),
+            good: util.trimToNumber($collapsed.find("div:contains('Good')").text()),
+            ok: util.trimToNumber($collapsed.find("div:contains('OK')").text()),
+            miss: util.trimToNumber($collapsed.find("div:contains('Miss')").text()),
+        },
+        playBar: $collapsed.find("svg").children().toArray().map(el => {
+            const fill = $(el).attr('fill')
+            switch (fill) {
+                case "#feff00": // Seems to be anything OTHER than a miss
+                    return 3;
+                case "#7598ff": // Miss, don't believe it's anything else
+                    return 2;
+                case "#ff0000": // Failed here
+                    return 1;
+                case "#000000": // Unplayed
+                    return 0;
+                default:
+                    return -1;
+            }
+        }),
+
+        onPage: pageIndex,
+    };
+
+    return rawData;
+}
