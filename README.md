@@ -38,19 +38,19 @@ try {
 
 The following games may not be updated by me, PRs may be reviewed and accepted
 
-| Game                            | Score Log | TachiExport |
-| :------------------------------ | :-------: | :---------: |
-| Jubeat                          |     ✅     |      ✅      |
-| pop'n music                     |     ✅     |      ✅      |
-| MÚSECA                          |   ✅[^1]   |      ✅      |
-| GITADORA                        |     ✅     |      ✅      |
-| DanceDanceRevolution            |     ❌     |      ❌      |
-| Sound Voltex                    |     ❌     |      ❌      |
-| beatmania IIDX                  |     ❌     |      ❌      |
-| NOSTALGIA                       |     ❌     |      -      |
-| REFLEC BEAT                     |     ❌     |      -      |
-| DANCERUSH STARDOM               |     ❌     |      -      |
-| PASELI Charging Machine (Soon™️) |     ❌     |      ❌      |
+| Game                            | Score Log | Tachi Export |
+| :------------------------------ | :-------: | :----------: |
+| Jubeat                          |     ✅     |      ✅       |
+| pop'n music                     |     ✅     |      ✅       |
+| MÚSECA                          |   ✅[^1]   |      ✅       |
+| GITADORA                        |     ✅     |      ✅       |
+| DanceDanceRevolution            |     ❌     |      ❌       |
+| Sound Voltex                    |     ❌     |      ❌       |
+| beatmania IIDX                  |     ❌     |      ❌       |
+| NOSTALGIA                       |     ✅     |      -       |
+| REFLEC BEAT                     |     ❌     |      -       |
+| DANCERUSH STARDOM               |     ❌     |      -       |
+| PASELI Charging Machine (Soon™️) |     ❌     |      ❌       |
 
 [^1]: Does not get the graficas from a mission, otherwise gets everything else
 
