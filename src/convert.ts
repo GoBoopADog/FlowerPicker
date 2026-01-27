@@ -1,6 +1,5 @@
 import type * as convertType from "./types/convert.js";
 import type * as scorelogJson from "./types/scorelogJson.js";
-import { trimToNumber } from "./util.js";
 
 export function jubeatToTachiCompat(jubeatDataJSON: scorelogJson.JubeatDataRawJSON[], msOffset: number = 0, service?: string): convertType.BatchManualJSONJubeat {
     // Thank you to https://gist.github.com/Meta-link/d01c15fc56a277becc7d67a7c1dccfa2 for the tachi structure
@@ -15,23 +14,23 @@ export function jubeatToTachiCompat(jubeatDataJSON: scorelogJson.JubeatDataRawJS
 
     jubeatDataJSON.forEach((item: scorelogJson.JubeatDataRawJSON) => {
         tachiCompJson.scores.push({
-            "score": Number(item.songNumberScore),
-            "lamp": item.songClearStatus.toUpperCase(), // Values returned by the scraper are the same, just not in uppercase
-            "musicRate": Number(item.songMusicRate.replace('%', '')), // Jubeat specific field :)
+            "score": Number(item.playScore),
+            "lamp": item.playLamp.toUpperCase(), // Values returned by the scraper are the same, just not in uppercase
+            "musicRate": Number(item.playMusicRate),
             "matchType": "inGameID",
             "identifier": item.songID.toString(),
-            "difficulty": (item.songIsHardPlay ? "HARD " : "") + item.songChart.split(' ')[0], // Gets from "ABC 1.1"
-            "timeAchieved": Math.floor(new Date(item.songTimestampString).getTime() - msOffset),
+            "difficulty": (item.playIsHardPlay ? "HARD " : "") + item.playChartDifficultyString.toUpperCase(),
+            "timeAchieved": Math.floor(new Date(item.playTimestampString).getTime() - msOffset),
             "judgements": {
-                "perfect": Number(item.scoreData.perfects),
-                "great": Number(item.scoreData.greats),
-                "good": Number(item.scoreData.goods),
-                "poor": Number(item.scoreData.poors),
-                "miss": Number(item.scoreData.misses)
+                "perfect": Number(item.playScoreJudgements.perfects),
+                "great": Number(item.playScoreJudgements.greats),
+                "good": Number(item.playScoreJudgements.goods),
+                "poor": Number(item.playScoreJudgements.poors),
+                "miss": Number(item.playScoreJudgements.misses)
             },
             "optional": {
-                "maxCombo": Number(item.songMaxCombo),
-                "musicBar": item.judgeBar
+                "maxCombo": Number(item.playMaxCombo),
+                "musicBar": item.playJudgeBar
             },
         });
     });
@@ -51,29 +50,24 @@ export function pnmToTachiCompat(pnmDataJSON: scorelogJson.PnmDataRawJSON[], msO
     };
 
     pnmDataJSON.forEach((item: scorelogJson.PnmDataRawJSON) => {
-        if (item.songChart.includes("BATTLE")) return; // Battle charts are not supported by Tachi
+        if (item.playChartDifficultyString.includes("BATTLE")) return; // Battle charts are not supported by Tachi
 
-        const medals = ["error", "failedCircle", "failedDiamond", "failedStar", "easyClear", "clearCircle", "clearDiamond", "clearStar", "fullComboCircle", "fullComboDiamond", "fullComboStar", "perfect"];
-        // Gets from either "1 HYPER" or "(BATTLE) 1 HYPER"
-        const parsedDifficultyRaw = item.songChart.split(' ')[item.songChart.split(' ').length - 1]!;
-        // Has to turn EASY/NORMAL/HYPER/EX to Easy/Normal/Hyper/EX
-        const parsedDifficulty = parsedDifficultyRaw.length > 2 ?
-            parsedDifficultyRaw.charAt(0).toUpperCase() + parsedDifficultyRaw.slice(1).toLowerCase()
-            : parsedDifficultyRaw.toUpperCase();
+        const medals = ["ERROR", "failedCircle", "failedDiamond", "failedStar", "easyClear", "clearCircle", "clearDiamond", "clearStar", "fullComboCircle", "fullComboDiamond", "fullComboStar", "perfect"];
 
         tachiCompJson.scores.push({
-            "score": Number(item.songNumberScore),
-            "clearMedal": medals[item.songMedal]!,
+            "score": item.playScore,
+            "clearMedal": medals[item.playMedal]!,
             "judgements": {
-                "cool": item.scoreData.cool,
-                "great": item.scoreData.great,
-                "good": item.scoreData.good,
-                "bad": item.scoreData.bad,
+                "cool": item.playScoreJudgements.cool,
+                "great": item.playScoreJudgements.great,
+                "good": item.playScoreJudgements.good,
+                "bad": item.playScoreJudgements.bad,
             },
-            "difficulty": parsedDifficulty,
+            // Has to turn EASY/NORMAL/HYPER/EX to Easy/Normal/Hyper/EX
+            "difficulty": item.playChartDifficultyString.length > 2 ? item.playChartDifficultyString.charAt(0).toUpperCase() + item.playChartDifficultyString.slice(1).toLowerCase() : item.playChartDifficultyString.toUpperCase(),
             "matchType": "inGameID",
             "identifier": item.songID.toString(),
-            "timeAchieved": Math.floor(new Date(item.songTimestampString).getTime() - msOffset),
+            "timeAchieved": Math.floor(new Date(item.playTimestampString).getTime() - msOffset),
         });
     });
 
@@ -91,16 +85,16 @@ export function musecaToTachiCompat(musecaDataJSON: scorelogJson.MusecaDataRawJS
     };
 
     musecaDataJSON.forEach((item: scorelogJson.MusecaDataRawJSON) => {
-        let parsedLamp = item.songLampText;
+        let parsedLamp = item.playLamp;
         let parsedDifficulty;
 
         if (parsedLamp === "CLEARED") parsedLamp = "CLEAR";
         // https://github.com/zkldi/Tachi/blob/a2f71ffcb38240089f2a0c1168ccd72afa566826/server/src/game-implementations/games/museca.ts#L75
-        if (trimToNumber(item.songNumberScore) === 1000000) parsedLamp = "PERFECT CONNECT ALL";
-        if (trimToNumber(item.songNumberScore) < 800000) parsedLamp = "FAILED";
-        if (trimToNumber(item.songNumberScore) >= 800000 && parsedLamp === "FAILED") parsedLamp = "CLEAR";
+        if (item.playScore === 1000000) parsedLamp = "PERFECT CONNECT ALL";
+        if (item.playScore < 800000) parsedLamp = "FAILED";
+        if (item.playScore >= 800000 && parsedLamp === "FAILED") parsedLamp = "CLEAR";
 
-        switch (item.songChart.charAt(0)) {
+        switch (item.playChartDifficultyString) {
             case "翠":
                 parsedDifficulty = "Green";
                 break;
@@ -115,19 +109,19 @@ export function musecaToTachiCompat(musecaDataJSON: scorelogJson.MusecaDataRawJS
         }
 
         tachiCompJson.scores.push({
-            "score": trimToNumber(item.songNumberScore),
+            "score": item.playScore,
             "lamp": parsedLamp,
             "judgements": {
-                "critical": item.scoreData.critical,
-                "near": item.scoreData.near,
-                "miss": item.scoreData.error,
+                "critical": item.playScoreJudgements.critical,
+                "near": item.playScoreJudgements.near,
+                "miss": item.playScoreJudgements.error,
             },
             "difficulty": parsedDifficulty,
             "matchType": "inGameID",
             "identifier": item.songID.toString(),
-            "timeAchieved": Math.floor(new Date(item.songTimestampString).getTime() - msOffset),
+            "timeAchieved": Math.floor(new Date(item.playTimestampString).getTime() - msOffset),
             optional: {
-                "maxCombo": item.songMaxCombo,
+                "maxCombo": item.playMaxCombo,
             },
         });
     });
@@ -149,20 +143,20 @@ export function gitadoraToTachiCompat(gitadoraDataJSON: scorelogJson.GitadoraDat
         if (playtype === "Dora" && item.playInstrumentString !== "Drum") return;
 
         tachiCompJson.scores.push({
-            percent: Number(item.playPercentageScore.replace('%', '')),
+            percent: item.playPercentageScore,
             lamp: item.playLamp.toUpperCase(),
             judgements: {
-                perfect: item.scoreData.perfect,
-                great: item.scoreData.great,
-                good: item.scoreData.good,
-                ok: item.scoreData.ok,
-                miss: item.scoreData.miss,
+                perfect: item.playScoreJudgements.perfect,
+                great: item.playScoreJudgements.great,
+                good: item.playScoreJudgements.good,
+                ok: item.playScoreJudgements.ok,
+                miss: item.playScoreJudgements.miss,
             },
 
-            difficulty: (item.playInstrumentString === "Bass" ? "BASS " : "") + item.songDifficultyString.toUpperCase(),
+            difficulty: (item.playInstrumentString === "Bass" ? "BASS " : "") + item.playChartDifficultyString.toUpperCase(),
             matchType: "inGameID",
             identifier: item.songID.toString(),
-            timeAchieved: Math.floor(new Date(item.songTimestampString).getTime() - msOffset),
+            timeAchieved: Math.floor(new Date(item.playTimestampString).getTime() - msOffset),
             optional: {
                 maxCombo: item.playMaxCombo,
             },

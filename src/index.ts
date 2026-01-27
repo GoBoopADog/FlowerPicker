@@ -149,8 +149,8 @@ class FlowerPicker {
                         throw new Error(`Parser not implemented for game "${game}".`);
                 }
 
-                if (new Date(score.songTimestampString).getTime() < fetchDownTo) {
-                    console.log(`Reached fetch down to timestamp at score played on "${score.songTimestampString}", stopping fetch.`);
+                if (new Date(score.playTimestampString).getTime() < fetchDownTo) {
+                    console.log(`Reached fetch down to timestamp at score played on "${score.playTimestampString}", stopping fetch.`);
                     stop = true;
                     break;
                 }
