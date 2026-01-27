@@ -11,6 +11,7 @@ type ScoreForGame<G extends Game> =
     G extends "museca" ? ReturnType<typeof parser.parseMusecaScoreData> :
     G extends "gitadora" ? ReturnType<typeof parser.parseGitadoraScoreData> :
     G extends "nostalgia" ? ReturnType<typeof parser.parseNostalgiaScoreData> :
+    G extends "ddr" ? ReturnType<typeof parser.parseDDRScoreData> :
     never;
 
 class FlowerPicker {
@@ -141,6 +142,9 @@ class FlowerPicker {
                         break;
                     case "gitadora":
                         score = parser.parseGitadoraScoreData(element, elementCollapsed, pageIndex) as ScoreForGame<G>;
+                        break;
+                    case "ddr":
+                        score = parser.parseDDRScoreData(element, elementCollapsed, pageIndex) as ScoreForGame<G>;
                         break;
                     case "nostalgia":
                         score = parser.parseNostalgiaScoreData(element, elementCollapsed, pageIndex) as ScoreForGame<G>;

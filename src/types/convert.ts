@@ -121,3 +121,18 @@ export interface BatchManualJSONGitadora {
     meta: BatchManualMeta;
     scores: BatchManualScoresGitadora[];
 }
+export interface BatchManualScoresDDR {
+    score: number,
+    lamp: string,
+    difficulty: string,
+    judgements: any,
+    matchType: "inGameID" | "songTitle" | "tachiSongID" | "ddrSongHash",
+    identifier: string,
+    optional?: any,
+    timeAchieved?: number | null,
+}
+
+export interface BatchManualJSONDDR {
+    meta: BatchManualMeta;
+    scores: BatchManualScoresDDR[];
+}

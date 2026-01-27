@@ -92,3 +92,20 @@ export interface NostalgiaDataRawJSON extends BaseDataRawJSON {
         slow: number;
     }
 }
+
+export interface DDRDataRawJSON extends BaseDataRawJSON {
+    playPlaystyle: string;
+    playLamp?: string;
+    flare?: number;
+    playMaxCombo: number;
+
+    playScoreJudgements: {
+        marvelous: number;
+        perfect: number;
+        great: number;
+        good: number;
+        ok: number;
+        ng: number;
+        miss: number;
+    }
+}

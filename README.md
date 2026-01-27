@@ -44,7 +44,7 @@ The following games may not be updated by me, PRs may be reviewed and accepted
 | pop'n music                     |     ✅     |      ✅       |
 | MÚSECA                          |   ✅[^1]   |      ✅       |
 | GITADORA                        |     ✅     |      ✅       |
-| DanceDanceRevolution            |     ❌     |      ❌       |
+| DanceDanceRevolution            |     ✅     |      ✅       |
 | Sound Voltex                    |     ❌     |      ❌       |
 | beatmania IIDX                  |     ❌     |      ❌       |
 | NOSTALGIA                       |     ✅     |      -       |

@@ -165,3 +165,63 @@ export function gitadoraToTachiCompat(gitadoraDataJSON: scorelogJson.GitadoraDat
 
     return tachiCompJson;
 }
+
+export function ddrToTachiCompat(ddrDataJSON: scorelogJson.DDRDataRawJSON[], playtype: "SP" | "DP", msOffset: number = 0, service?: string): convertType.BatchManualJSONDDR {
+    let tachiCompJson: convertType.BatchManualJSONDDR = {
+        meta: {
+            "game": "ddr",
+            "playtype": playtype,
+            "service": service ? service : "FlowerPicker",
+        },
+        scores: []
+    };
+
+    const flares = ["0", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "EX"]
+
+    ddrDataJSON.forEach((item: scorelogJson.DDRDataRawJSON) => {
+        if (playtype !== item.playPlaystyle) return;
+
+        const calculatedExScore = (item.playScoreJudgements.marvelous * 3) + (item.playScoreJudgements.ok * 3) + (item.playScoreJudgements.perfect * 2) + (item.playScoreJudgements.great);
+
+        let parsedLamp = item.playGrade === "E" ? "FAILED" : "CLEAR";
+        switch (item.playLamp) {
+            case "ASSIST CLEAR":
+                parsedLamp = "ASSIST"
+                break;
+            case "GOOD FULL COMBO":
+                parsedLamp = "FULL COMBO"
+                break;
+            case "EXTRA CLEAR":
+                parsedLamp = "LIFE4"
+                break;
+            default:
+                parsedLamp = item.playLamp ? item.playLamp : parsedLamp;
+                break;
+        }
+
+        tachiCompJson.scores.push({
+            score: item.playScore,
+            difficulty: item.playChartDifficultyString.toUpperCase(),
+            lamp: parsedLamp,
+            judgements: {
+                MARVELOUS: item.playScoreJudgements.marvelous,
+                PERFECT: item.playScoreJudgements.perfect,
+                GREAT: item.playScoreJudgements.great,
+                GOOD: item.playScoreJudgements.good,
+                OK: item.playScoreJudgements.ok,
+                MISS: item.playScoreJudgements.miss,
+            },
+
+            matchType: "inGameID",
+            identifier: item.songID.toString(),
+            timeAchieved: Math.floor(new Date(item.playTimestampString).getTime() - msOffset),
+            optional: {
+                "flare": item.flare ? flares[item.flare] : undefined,
+                "maxCombo": item.playMaxCombo,
+                "exScore": calculatedExScore,
+            },
+        });
+    });
+
+    return tachiCompJson;
+}
