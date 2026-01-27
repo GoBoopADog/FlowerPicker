@@ -2,7 +2,7 @@ import type * as convertType from "./types/convert.js";
 import type * as scorelogJson from "./types/scorelogJson.js";
 import { trimToNumber } from "./util.js";
 
-export function jubeatToTachiCompat(jubeatDataJSON: scorelogJson.JubeatDataRawJSON[], service?: string): convertType.BatchManualJSONJubeat {
+export function jubeatToTachiCompat(jubeatDataJSON: scorelogJson.JubeatDataRawJSON[], msOffset: number = 0, service?: string): convertType.BatchManualJSONJubeat {
     // Thank you to https://gist.github.com/Meta-link/d01c15fc56a277becc7d67a7c1dccfa2 for the tachi structure
     let tachiCompJson: convertType.BatchManualJSONJubeat = {
         meta: {
@@ -21,7 +21,7 @@ export function jubeatToTachiCompat(jubeatDataJSON: scorelogJson.JubeatDataRawJS
             "matchType": "inGameID",
             "identifier": item.songID.toString(),
             "difficulty": (item.songIsHardPlay ? "HARD " : "") + item.songChart.split(' ')[0], // Gets from "ABC 1.1"
-            "timeAchieved": Math.floor(new Date(item.songTimestampString).getTime()),
+            "timeAchieved": Math.floor(new Date(item.songTimestampString).getTime() - msOffset),
             "judgements": {
                 "perfect": Number(item.scoreData.perfects),
                 "great": Number(item.scoreData.greats),
@@ -39,7 +39,7 @@ export function jubeatToTachiCompat(jubeatDataJSON: scorelogJson.JubeatDataRawJS
     return tachiCompJson;
 }
 
-export function pnmToTachiCompat(pnmDataJSON: scorelogJson.PnmDataRawJSON[], service?: string): convertType.BatchManualJSONPnm {
+export function pnmToTachiCompat(pnmDataJSON: scorelogJson.PnmDataRawJSON[], msOffset: number = 0, service?: string): convertType.BatchManualJSONPnm {
     // Thank you to https://github.com/HutchyBen/flower-tachi/blob/main/games/popn.py for helping me figure out how to parse the lamp thing
     let tachiCompJson: convertType.BatchManualJSONPnm = {
         meta: {
@@ -73,14 +73,14 @@ export function pnmToTachiCompat(pnmDataJSON: scorelogJson.PnmDataRawJSON[], ser
             "difficulty": parsedDifficulty,
             "matchType": "inGameID",
             "identifier": item.songID.toString(),
-            "timeAchieved": Math.floor(new Date(item.songTimestampString).getTime()),
+            "timeAchieved": Math.floor(new Date(item.songTimestampString).getTime() - msOffset),
         });
     });
 
     return tachiCompJson;
 }
 
-export function musecaToTachiCompat(musecaDataJSON: scorelogJson.MusecaDataRawJSON[], service?: string): convertType.BatchManualJSONMuseca {
+export function musecaToTachiCompat(musecaDataJSON: scorelogJson.MusecaDataRawJSON[], msOffset: number = 0, service?: string): convertType.BatchManualJSONMuseca {
     let tachiCompJson: convertType.BatchManualJSONMuseca = {
         meta: {
             "game": "museca",
@@ -125,7 +125,7 @@ export function musecaToTachiCompat(musecaDataJSON: scorelogJson.MusecaDataRawJS
             "difficulty": parsedDifficulty,
             "matchType": "inGameID",
             "identifier": item.songID.toString(),
-            "timeAchieved": Math.floor(new Date(item.songTimestampString).getTime()),
+            "timeAchieved": Math.floor(new Date(item.songTimestampString).getTime() - msOffset),
             optional: {
                 "maxCombo": item.songMaxCombo,
             },
@@ -135,7 +135,7 @@ export function musecaToTachiCompat(musecaDataJSON: scorelogJson.MusecaDataRawJS
     return tachiCompJson;
 }
 
-export function gitadoraToTachiCompat(gitadoraDataJSON: scorelogJson.GitadoraDataRawJSON[], playtype: "Gita" | "Dora", service?: string): convertType.BatchManualJSONGitadora {
+export function gitadoraToTachiCompat(gitadoraDataJSON: scorelogJson.GitadoraDataRawJSON[], playtype: "Gita" | "Dora", msOffset: number = 0, service?: string): convertType.BatchManualJSONGitadora {
     let tachiCompJson: convertType.BatchManualJSONGitadora = {
         meta: {
             "game": "gitadora",
@@ -162,7 +162,7 @@ export function gitadoraToTachiCompat(gitadoraDataJSON: scorelogJson.GitadoraDat
             difficulty: (item.playInstrumentString === "Bass" ? "BASS " : "") + item.songDifficultyString.toUpperCase(),
             matchType: "inGameID",
             identifier: item.songID.toString(),
-            timeAchieved: Math.floor(new Date(item.songTimestampString).getTime()),
+            timeAchieved: Math.floor(new Date(item.songTimestampString).getTime() - msOffset),
             optional: {
                 maxCombo: item.playMaxCombo,
             },

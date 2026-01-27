@@ -158,3 +158,41 @@ export function parseGitadoraScoreData(mainElement: cheerio.Element, collapsedEl
 
     return rawData;
 }
+
+export function parseNostalgiaScoreData(mainElement: cheerio.Element, collapsedElement: cheerio.Element, pageIndex: number): scorelogJson.NostalgiaDataRawJSON {
+    const $ = cheerio.load('');
+    const $main = $(mainElement);
+    const $collapsed = $(collapsedElement).find('td > div > div');
+
+    const fastSlowText = $collapsed.find("div:contains('Fast / Slow')").text();
+
+    const rawData: scorelogJson.NostalgiaDataRawJSON = {
+        playID: util.trimToNumber($main.attr('data-target')!),
+        songTitle: $main.find('td > a > strong').text().trim(),
+        songID: util.trimToNumber($main.find('td > a').attr('href')!.split('/')[7]!),
+        playDifficultyID: util.trimToNumber($main.find('td > a').attr('href')!.split('/').pop()!),
+        playChartString: $main.children('td').eq(2).text().trim().split('\n')[0]!,
+        playChartNumber: util.trimToNumber($main.children('td').eq(2).text().trim().split('\n')[1]!.trim()),
+        playGrade: $main.children('td').eq(3).find('strong').text().trim(),
+        playScore: util.trimToNumber($main.children('td').eq(3).find('div > small').text().trim()),
+        songTimestampString: $main.children('td').eq(5).find('div > small').text().trim(),
+
+        playScoreData: {
+            pJust: util.trimToNumber($collapsed.find("div:contains('◆Just')").text()),
+            just: util.trimToNumber($collapsed.find("div:contains('Just'):not(:contains('◆'))").text()),
+            good: util.trimToNumber($collapsed.find("div:contains('Good')").text()),
+            near: util.trimToNumber($collapsed.find("div:contains('Near')").text()),
+            miss: util.trimToNumber($collapsed.find("div:contains('Miss')").text()),
+            fast: fastSlowText ? util.trimToNumber(fastSlowText.split('/')[1]! ?? 0) : 0, // The element only doesn't exist if all notes were hit perfectly
+            slow: fastSlowText ? util.trimToNumber(fastSlowText.split('/')[2]! ?? 0) : 0,
+        },
+
+        arcadePlayedAtString: $collapsed.find("div:contains('Played at') > div > a").text().replace('Played at', '').trim(),
+        arcadePlayedAtID: util.trimToNumber($collapsed.find("div:contains('Played at') > div > a").attr('href')?.split('/').pop()!),
+        machinePlayedWithString: $collapsed.find("div:contains('Played with')").text().replace('Played with', '').trim(),
+
+        onPage: pageIndex,
+    };
+
+    return rawData;
+}

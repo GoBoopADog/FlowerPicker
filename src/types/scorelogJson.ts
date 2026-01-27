@@ -106,3 +106,32 @@ export interface GitadoraDataRawJSON {
 
     onPage: number
 }
+
+export interface NostalgiaDataRawJSON {
+    playID: number;
+    songTitle: string;
+    songID: number;
+    playDifficultyID: number;
+    playChartString: string;
+    playChartNumber: number;
+    playGrade: string;
+    playScore: number;
+    songTimestampString: string;
+
+    playScoreData: {
+        pJust: number;
+        just: number;
+        good: number;
+        near: number;
+        miss: number;
+
+        fast: number;
+        slow: number;
+    }
+
+    arcadePlayedAtString: string;
+    arcadePlayedAtID: number;
+    machinePlayedWithString: string;
+
+    onPage: number;
+}
