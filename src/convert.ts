@@ -1,13 +1,19 @@
 import type * as convertType from "./types/convert.js";
 import type * as scorelogJson from "./types/scorelogJson.js";
 
-export function jubeatToTachiCompat(jubeatDataJSON: scorelogJson.JubeatDataRawJSON[], msOffset: number = 0, service?: string): convertType.BatchManualJSONJubeat {
+export function jubeatToTachiCompat(jubeatDataJSON: scorelogJson.JubeatDataRawJSON[], options?: {
+    msOffset?: number,
+    service?: string,
+}): convertType.BatchManualJSONJubeat {
+    const msOffset = options?.msOffset ?? 0;
+    const service = options?.service ?? "FlowerPicker";
+
     // Thank you to https://gist.github.com/Meta-link/d01c15fc56a277becc7d67a7c1dccfa2 for the tachi structure
     let tachiCompJson: convertType.BatchManualJSONJubeat = {
         meta: {
             "game": "jubeat",
             "playtype": "Single",
-            "service": service ? service : "FlowerPicker",
+            "service": service,
         },
         scores: []
     };
@@ -20,7 +26,7 @@ export function jubeatToTachiCompat(jubeatDataJSON: scorelogJson.JubeatDataRawJS
             "matchType": "inGameID",
             "identifier": item.songID.toString(),
             "difficulty": (item.playIsHardPlay ? "HARD " : "") + item.playChartDifficultyString.toUpperCase(),
-            "timeAchieved": Math.floor(new Date(item.playTimestampString).getTime() - msOffset),
+            "timeAchieved": Math.floor(new Date(item.playTimestampString).getTime() + msOffset),
             "judgements": {
                 "perfect": Number(item.playScoreJudgements.perfects),
                 "great": Number(item.playScoreJudgements.greats),
@@ -38,13 +44,19 @@ export function jubeatToTachiCompat(jubeatDataJSON: scorelogJson.JubeatDataRawJS
     return tachiCompJson;
 }
 
-export function pnmToTachiCompat(pnmDataJSON: scorelogJson.PnmDataRawJSON[], msOffset: number = 0, service?: string): convertType.BatchManualJSONPnm {
+export function pnmToTachiCompat(pnmDataJSON: scorelogJson.PnmDataRawJSON[], options?: {
+    msOffset?: number,
+    service?: string,
+}): convertType.BatchManualJSONPnm {
+    const msOffset = options?.msOffset ?? 0;
+    const service = options?.service ?? "FlowerPicker";
+
     // Thank you to https://github.com/HutchyBen/flower-tachi/blob/main/games/popn.py for helping me figure out how to parse the lamp thing
     let tachiCompJson: convertType.BatchManualJSONPnm = {
         meta: {
             "game": "popn",
             "playtype": "9B",
-            "service": service ? service : "FlowerPicker",
+            "service": service,
         },
         scores: []
     };
@@ -67,19 +79,25 @@ export function pnmToTachiCompat(pnmDataJSON: scorelogJson.PnmDataRawJSON[], msO
             "difficulty": item.playChartDifficultyString.length > 2 ? item.playChartDifficultyString.charAt(0).toUpperCase() + item.playChartDifficultyString.slice(1).toLowerCase() : item.playChartDifficultyString.toUpperCase(),
             "matchType": "inGameID",
             "identifier": item.songID.toString(),
-            "timeAchieved": Math.floor(new Date(item.playTimestampString).getTime() - msOffset),
+            "timeAchieved": Math.floor(new Date(item.playTimestampString).getTime() + msOffset),
         });
     });
 
     return tachiCompJson;
 }
 
-export function musecaToTachiCompat(musecaDataJSON: scorelogJson.MusecaDataRawJSON[], msOffset: number = 0, service?: string): convertType.BatchManualJSONMuseca {
+export function musecaToTachiCompat(musecaDataJSON: scorelogJson.MusecaDataRawJSON[], options?: {
+    msOffset?: number,
+    service?: string,
+}): convertType.BatchManualJSONMuseca {
+    const msOffset = options?.msOffset ?? 0;
+    const service = options?.service ?? "FlowerPicker";
+
     let tachiCompJson: convertType.BatchManualJSONMuseca = {
         meta: {
             "game": "museca",
             "playtype": "Single",
-            "service": service ? service : "FlowerPicker",
+            "service": service,
         },
         scores: []
     };
@@ -119,7 +137,7 @@ export function musecaToTachiCompat(musecaDataJSON: scorelogJson.MusecaDataRawJS
             "difficulty": parsedDifficulty,
             "matchType": "inGameID",
             "identifier": item.songID.toString(),
-            "timeAchieved": Math.floor(new Date(item.playTimestampString).getTime() - msOffset),
+            "timeAchieved": Math.floor(new Date(item.playTimestampString).getTime() + msOffset),
             optional: {
                 "maxCombo": item.playMaxCombo,
             },
@@ -129,12 +147,18 @@ export function musecaToTachiCompat(musecaDataJSON: scorelogJson.MusecaDataRawJS
     return tachiCompJson;
 }
 
-export function gitadoraToTachiCompat(gitadoraDataJSON: scorelogJson.GitadoraDataRawJSON[], playtype: "Gita" | "Dora", msOffset: number = 0, service?: string): convertType.BatchManualJSONGitadora {
+export function gitadoraToTachiCompat(gitadoraDataJSON: scorelogJson.GitadoraDataRawJSON[], playtype: "Gita" | "Dora", options?: {
+    msOffset?: number,
+    service?: string,
+}): convertType.BatchManualJSONGitadora {
+    const msOffset = options?.msOffset ?? 0;
+    const service = options?.service ?? "FlowerPicker";
+
     let tachiCompJson: convertType.BatchManualJSONGitadora = {
         meta: {
             "game": "gitadora",
             "playtype": playtype,
-            "service": service ? service : "FlowerPicker",
+            "service": service,
         },
         scores: []
     };
@@ -156,7 +180,7 @@ export function gitadoraToTachiCompat(gitadoraDataJSON: scorelogJson.GitadoraDat
             difficulty: (item.playInstrumentString === "Bass" ? "BASS " : "") + item.playChartDifficultyString.toUpperCase(),
             matchType: "inGameID",
             identifier: item.songID.toString(),
-            timeAchieved: Math.floor(new Date(item.playTimestampString).getTime() - msOffset),
+            timeAchieved: Math.floor(new Date(item.playTimestampString).getTime() + msOffset),
             optional: {
                 maxCombo: item.playMaxCombo,
             },
@@ -166,12 +190,18 @@ export function gitadoraToTachiCompat(gitadoraDataJSON: scorelogJson.GitadoraDat
     return tachiCompJson;
 }
 
-export function ddrToTachiCompat(ddrDataJSON: scorelogJson.DDRDataRawJSON[], playtype: "SP" | "DP", msOffset: number = 0, service?: string): convertType.BatchManualJSONDDR {
+export function ddrToTachiCompat(ddrDataJSON: scorelogJson.DDRDataRawJSON[], playtype: "SP" | "DP", options?: {
+    msOffset?: number,
+    service?: string,
+}): convertType.BatchManualJSONDDR {
+    const msOffset = options?.msOffset ?? 0;
+    const service = options?.service ?? "FlowerPicker";
+
     let tachiCompJson: convertType.BatchManualJSONDDR = {
         meta: {
             "game": "ddr",
             "playtype": playtype,
-            "service": service ? service : "FlowerPicker",
+            "service": service,
         },
         scores: []
     };
@@ -214,7 +244,7 @@ export function ddrToTachiCompat(ddrDataJSON: scorelogJson.DDRDataRawJSON[], pla
 
             matchType: "inGameID",
             identifier: item.songID.toString(),
-            timeAchieved: Math.floor(new Date(item.playTimestampString).getTime() - msOffset),
+            timeAchieved: Math.floor(new Date(item.playTimestampString).getTime() + msOffset),
             optional: {
                 "flare": item.flare ? flares[item.flare] : undefined,
                 "maxCombo": item.playMaxCombo,

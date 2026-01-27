@@ -85,14 +85,19 @@ class FlowerPicker {
     public async getScoreLog<G extends Game>(
         game: G,
         profileID: string,
-        fetchDownTo: number = 0,
-        msTimeout: number = 1000
+        options?: {
+            fetchDownTo?: number,
+            msTimeout?: number;
+        }
     ): Promise<Array<ScoreForGame<G>>> {
         if (!GAMES.includes(game)) {
             throw new Error(`Game "${game}" is not supported.`);
         }
 
-        if (fetchDownTo > 0) { console.log(`Fetching scores down to timestamp: ${new Date(fetchDownTo).toISOString()}`) } else { console.log(`Fetching all scores without a down-to limit.`); }
+        const fetchDownTo = options?.fetchDownTo ?? 0;
+        const msTimeout = options?.msTimeout ?? 1000;
+
+        if (fetchDownTo > 0) { console.log(`Fetching ${profileID}'s ${game} scores down to timestamp: ${new Date(fetchDownTo).toISOString()}`) } else { console.log(`Fetching all of ${profileID}'s ${game} scores without a down-to limit.`); }
 
         let url = `${this.baseURL}/game/${game}${util.doesGameHaveProfileInUrl(game) ? '/profile' : ''}/${profileID}?page=`;
         const firstFetchedPage = await this.fetchWithCookie(`${url}1`)
@@ -154,7 +159,7 @@ class FlowerPicker {
                 }
 
                 if (new Date(score.playTimestampString).getTime() < fetchDownTo) {
-                    console.log(`Reached fetch down to timestamp at score played on "${score.playTimestampString}", stopping fetch.`);
+                    console.log(`Reached fetch down to timestamp at score played on "${score.playTimestampString}", stopping fetch for ${profileID} on ${game}.`);
                     stop = true;
                     break;
                 }
@@ -180,6 +185,8 @@ class FlowerPicker {
 
 export default FlowerPicker;
 export * as convert from "./convert.js";
-export * as error from "./types/errors.js";
-export * as scorelogJson from "./types/scorelogJson.js";
+
+export * as convertTypes from "./types/convert.js";
+export * as scorelogJsonTypes from "./types/scorelogJson.js";
+export * as errorTypes from "./types/errors.js";
 // export * as util from "./util";

@@ -1,5 +1,5 @@
 // https://docs.tachi.ac/codebase/batch-manual/#meta
-export const Games = [
+const Games = [
     { name: "iidx", playtypes: ["SP", "DP"] },
     { name: "chunithm", playtypes: ["Single"] },
     { name: "museca", playtypes: ["Single"] },
@@ -14,12 +14,12 @@ export const Games = [
     { name: "ddr", playtypes: ["SP", "DP"] },
 ] as const;
 
-export type GameName = typeof Games[number]["name"];
+type GameName = typeof Games[number]["name"];
 
-export type PlaytypeFor<G extends GameName> =
+type PlaytypeFor<G extends GameName> =
     Extract<(typeof Games)[number], { name: G }>["playtypes"][number];
 
-export type BatchManualMeta = {
+type BatchManualMeta = {
     [G in GameName]: {
         game: G;
         playtype: PlaytypeFor<G>;
@@ -29,7 +29,7 @@ export type BatchManualMeta = {
 }[GameName];
 
 // https://docs.tachi.ac/codebase/batch-manual
-export type BatchManualScoresJubeat = {
+type BatchManualScoresJubeat = {
     score: number,
     /**
      * The lamp for this score. This should be one of the lamps as described in the config for your game + playtype.
@@ -72,7 +72,7 @@ export interface BatchManualJSONJubeat {
     scores: BatchManualScoresJubeat[];
 }
 
-export interface BatchManualScoresPnm {
+interface BatchManualScoresPnm {
     score: number,
     /**
      * The clear medal for this score. This should be one of the medals as described in the config for your game + playtype.
@@ -90,7 +90,7 @@ export interface BatchManualJSONPnm {
     scores: BatchManualScoresPnm[];
 }
 
-export interface BatchManualScoresMuseca {
+interface BatchManualScoresMuseca {
     score: number,
     lamp: string,
     judgements: any,
@@ -106,7 +106,7 @@ export interface BatchManualJSONMuseca {
     scores: BatchManualScoresMuseca[];
 }
 
-export interface BatchManualScoresGitadora {
+interface BatchManualScoresGitadora {
     percent: number,
     lamp: string,
     judgements: any,
@@ -121,7 +121,7 @@ export interface BatchManualJSONGitadora {
     meta: BatchManualMeta;
     scores: BatchManualScoresGitadora[];
 }
-export interface BatchManualScoresDDR {
+interface BatchManualScoresDDR {
     score: number,
     lamp: string,
     difficulty: string,

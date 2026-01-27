@@ -5,12 +5,10 @@ This project is for getting information from a rhythm game website.
 > PLEASE be sure to respect ratelimits when using this package!! I am not responsible for any accidental misuse nor anything that may result from the use of FlowerPicker.
 
 ## Getting Started
-Currently only Jubeat is supported as far as games go.
-
 Below is some example code with their explanations to get started:
 ```js
+import FlowerPicker, { convert, convertTypes, errorTypes, scorelogJsonTypes } from "flowerpicker";
 import fs from 'fs';
-import FlowerPicker, { convert, error } from "flowerpicker";
 
 // The constructor has 2 parameters: The url to the server dashboard, and your cookie to said dashboard
 const SESSION_COOKIE = "service_session=abc123";
@@ -19,23 +17,28 @@ const picker = new FlowerPicker('https://server.link', SESSION_COOKIE);
 try {
     // This verifies the validity of your session cookie and throws an error if it's invalid
     await picker.setup();
-
-    // Get all jubeat scores for profile ID 12345678 between now and January 1st 2026 (Omitting the timestamp will simply get all of the scores)
-    const scores = await picker.getScoreLog("jubeat", "12345678", 1767225600000);
-    console.log(`Fetched ${scores.length} scores.`);
-
-    // To convert an export to a tachi-compatible JSON, you can use the convert module
-    const convertedJubeat = await convert.jubeatToTachiCompat(scores);
-
-    // Then feel free to do whatever you want with it!
-    fs.writeFileSync(`./jubeat-scorelog-tachi.json`, JSON.stringify(convertedJubeat, null, 4), 'utf-8');
 } catch (e) {
-    if (e instanceof error.InvalidSessionCookieError) {
+    if (e instanceof errorTypes.InvalidSessionCookieError) {
         console.error("Invalid session cookie provided, please check it and try again.");
     }
 };
+
+// Get all jubeat scores for profile ID 12345678 between when this is run and January 1st 2026
+const scores: scorelogJsonTypes.JubeatDataRawJSON[] = await picker.getScoreLog("jubeat", "12345678", {
+    fetchDownTo: new Date("2026-01-01T00:00:00Z").getTime(), // This field is not required! Not putting it will simply fetch all the scores for that user
+});
+console.log(`Fetched ${scores.length} scores.`);
+
+// To convert an export to a tachi-compatible JSON, you can use the convert module
+const convertedJubeat: convertTypes.BatchManualJSONJubeat = await convert.jubeatToTachiCompat(scores, {
+    service: "FlowerPicker",
+});
+
+// Then feel free to do whatever you want with it!
+fs.writeFileSync(`./jubeat-scorelog-tachi.json`, JSON.stringify(convertedJubeat, null, 4), 'utf-8');
 ```
 
+## Game Support
 The following games may not be updated by me, PRs may be reviewed and accepted
 
 | Game                            | Score Log | Tachi Export |
