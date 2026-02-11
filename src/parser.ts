@@ -216,49 +216,127 @@ export function parseNostalgiaScoreData(mainElement: cheerio.Element, collapsedE
 }
 
 export function parseDDRScoreData(mainElement: cheerio.Element, collapsedElement: cheerio.Element, pageIndex: number): scorelogJson.DDRDataRawJSON {
-    {
-        const $ = cheerio.load('');
-        const $main = $(mainElement);
-        const $collapsed = $(collapsedElement).find('td > div > div');
+    const $ = cheerio.load('');
+    const $main = $(mainElement);
+    const $collapsed = $(collapsedElement).find('td > div > div');
 
-        const hasLamp = $main.children('td').eq(5).find('small').attr('title') ? true : false;
-        const flare = $main.children('td').eq(6).text().trim();
+    const hasLamp = $main.children('td').eq(5).find('small').attr('title') ? true : false;
+    const flare = $main.children('td').eq(6).text().trim();
 
-        const rawData: scorelogJson.DDRDataRawJSON = {
-            playID: util.trimToNumber($main.attr('data-target')!),
-            songTitle: $main.find('td > a > b').text().trim(),
-            songID: util.trimToNumber($main.find('td > a').attr('href')!.split('/')[7]!),
-            playChartDifficultyID: util.trimToNumber($main.find('td > a').attr('href')!.split('/').pop()!),
+    const rawData: scorelogJson.DDRDataRawJSON = {
+        playID: util.trimToNumber($main.attr('data-target')!),
+        songTitle: $main.find('td > a > b').text().trim(),
+        songID: util.trimToNumber($main.find('td > a').attr('href')!.split('/')[7]!),
+        playChartDifficultyID: util.trimToNumber($main.find('td > a').attr('href')!.split('/').pop()!),
 
-            playPlaystyle: $main.children('td').eq(2).text().trim().split('\n').at(0)!.split(' ').at(0)!,
-            playChartDifficultyString: $main.children('td').eq(2).text().trim().split('\n').at(0)!.split(' ').at(1)!,
-            playChartDifficultyNumber: util.trimToNumber($main.children('td').eq(2).text().trim().split('\n').at(1)!.trim()),
+        playPlaystyle: $main.children('td').eq(2).text().trim().split('\n').at(0)!.split(' ').at(0)!,
+        playChartDifficultyString: $main.children('td').eq(2).text().trim().split('\n').at(0)!.split(' ').at(1)!,
+        playChartDifficultyNumber: util.trimToNumber($main.children('td').eq(2).text().trim().split('\n').at(1)!.trim()),
 
-            playLamp: hasLamp ? $main.children('td').eq(5).find('small').attr('title')!.trim() : undefined,
-            playScore: util.trimToNumber($main.children('td').eq(3).find('strong').text().trim()),
-            playGrade: $main.children('td').eq(4).find('strong').text().trim(),
+        playLamp: hasLamp ? $main.children('td').eq(5).find('small').attr('title')!.trim() : undefined,
+        playScore: util.trimToNumber($main.children('td').eq(3).find('strong').text().trim()),
+        playGrade: $main.children('td').eq(4).find('strong').text().trim(),
 
-            flare: flare ? util.trimToNumber(flare) : undefined,
-            playMaxCombo: util.trimToNumber($main.children('td').eq(7).text().trim()),
+        flare: flare ? util.trimToNumber(flare) : undefined,
+        playMaxCombo: util.trimToNumber($main.children('td').eq(7).text().trim()),
 
-            playScoreJudgements: {
-                marvelous: util.trimToNumber($collapsed.find("strong:contains('Marvelous')").parent().text()),
-                perfect: util.trimToNumber($collapsed.find("strong:contains('Perfect')").parent().text()),
-                great: util.trimToNumber($collapsed.find("strong:contains('Great')").parent().text()),
-                good: util.trimToNumber($collapsed.find("strong:contains('Good')").parent().text()),
-                ok: util.trimToNumber($collapsed.find("strong:contains('OK')").parent().text()),
-                ng: util.trimToNumber($collapsed.find("strong:contains('NG')").parent().text()),
-                miss: util.trimToNumber($collapsed.find("strong:contains('Miss')").parent().text()),
-            },
+        playScoreJudgements: {
+            marvelous: util.trimToNumber($collapsed.find("strong:contains('Marvelous')").parent().text()),
+            perfect: util.trimToNumber($collapsed.find("strong:contains('Perfect')").parent().text()),
+            great: util.trimToNumber($collapsed.find("strong:contains('Great')").parent().text()),
+            good: util.trimToNumber($collapsed.find("strong:contains('Good')").parent().text()),
+            ok: util.trimToNumber($collapsed.find("strong:contains('OK')").parent().text()),
+            ng: util.trimToNumber($collapsed.find("strong:contains('NG')").parent().text()),
+            miss: util.trimToNumber($collapsed.find("strong:contains('Miss')").parent().text()),
+        },
 
-            playTimestampString: $main.children('td').eq(8).find('small').text().trim(),
-            arcadePlayedAtString: $collapsed.find("div:contains('Played at') > div > a").text().replace('Played at', '').trim(),
-            arcadePlayedAtID: util.trimToNumber($collapsed.find("div:contains('Played at') > div > a").attr('href')?.split('/').pop()!),
-            versionPlayedOnString: $collapsed.find("div:contains('Played with')").text().replace('Played with', '').trim(),
+        playTimestampString: $main.children('td').eq(8).find('small').text().trim(),
+        arcadePlayedAtString: $collapsed.find("div:contains('Played at') > div > a").text().replace('Played at', '').trim(),
+        arcadePlayedAtID: util.trimToNumber($collapsed.find("div:contains('Played at') > div > a").attr('href')?.split('/').pop()!),
+        versionPlayedOnString: $collapsed.find("div:contains('Played with')").text().replace('Played with', '').trim(),
 
-            onPage: pageIndex,
-        }
-
-        return rawData;
+        onPage: pageIndex,
     }
+
+    return rawData;
+}
+
+export function parsePocoScoreData(mainElement: cheerio.Element, collapsedElement: cheerio.Element, pageIndex: number): scorelogJson.PocoDataRawJSON {
+    const $ = cheerio.load('');
+    const $main = $(mainElement);
+    const $collapsed = $(collapsedElement).find('td > div > div');
+
+    const rawData: scorelogJson.PocoDataRawJSON = {
+        playID: util.trimToNumber($main.attr('data-target')!),
+        songTitle: $main.find('td > a > b').text().trim(),
+        songID: util.trimToNumber($main.find('td > a').attr('href')!.split('/')[5]!),
+        playChartDifficultyID: util.trimToNumber($main.find('td > a').attr('href')!.split('/').pop()!),
+
+        playChartDifficultyString: $main.children('td').eq(2).text().trim().split('\n').at(0)!,
+        playChartDifficultyNumber: util.trimToNumber($main.children('td').eq(2).text().trim()),
+
+        playLamp: $main.children('td').eq(3).text().trim(),
+        playScore: Number($main.children('td').eq(4).find('b').text().trim().replace('%', '')),
+        playGrade: $main.children('td').eq(4).contents().last().text().trim(),
+
+        playMaxCombo: util.trimToNumber($collapsed.find("div:contains('Max Combo')").text().trim()),
+        playComboRank: $collapsed.find("div:contains('Combo Rank')").html()!.split('<br>')[1]!.trim(),
+
+        playScoreJudgements: {
+            perfect: util.trimToNumber($collapsed.find("div:contains('Perfect')").eq(0).text()),
+            great: util.trimToNumber($collapsed.find("div:contains('Great')").eq(0).text()),
+            good: util.trimToNumber($collapsed.find("div:contains('Good')").eq(0).text()),
+            bad: util.trimToNumber($collapsed.find("div:contains('Bad')").eq(0).text()),
+            miss: util.trimToNumber($collapsed.find("div:contains('Miss')").eq(0).text()),
+        },
+
+        playJudgeBreakdown: {
+            fastBad: Number($collapsed.find("div:contains('Bad')").eq(1).html()?.split('<br>')[1]?.trim()),
+            fastBadPercent: Number($collapsed.find("div:contains('Bad')").eq(1).html()?.split('<br>')[2]?.trim().replace('%', '')),
+
+            fastGood: Number($collapsed.find("div:contains('Good')").eq(1).html()?.split('<br>')[1]?.trim()),
+            fastGoodPercent: Number($collapsed.find("div:contains('Good')").eq(1).html()?.split('<br>')[2]?.trim().replace('%', '')),
+
+            fastGreat: Number($collapsed.find("div:contains('Great')").eq(1).html()?.split('<br>')[1]?.trim()),
+            fastGreatPercent: Number($collapsed.find("div:contains('Great')").eq(1).html()?.split('<br>')[2]?.trim().replace('%', '')),
+
+            perfect: Number($collapsed.find("div:contains('Perfect')").eq(1).html()?.split('<br>')[1]?.trim()),
+            perfectPercent: Number($collapsed.find("div:contains('Perfect')").eq(1).html()?.split('<br>')[2]?.trim().replace('%', '')),
+
+            slowGreat: Number($collapsed.find("div:contains('Great')").eq(2).html()?.split('<br>')[1]?.trim()),
+            slowGreatPercent: Number($collapsed.find("div:contains('Great')").eq(2).html()?.split('<br>')[2]?.trim().replace('%', '')),
+
+            slowGood: Number($collapsed.find("div:contains('Good')").eq(2).html()?.split('<br>')[1]?.trim()),
+            slowGoodPercent: Number($collapsed.find("div:contains('Good')").eq(2).html()?.split('<br>')[2]?.trim().replace('%', '')),
+
+            slowBad: Number($collapsed.find("div:contains('Bad')").eq(2).html()?.split('<br>')[1]?.trim()),
+            slowBadPercent: Number($collapsed.find("div:contains('Bad')").eq(2).html()?.split('<br>')[2]?.trim().replace('%', '')),
+
+
+            hold: util.trimToNumber($collapsed.children("div").eq(21).html()?.split('<br>')[0]?.trim().split('/')[0]!),
+            holdMax: util.trimToNumber($collapsed.children("div").eq(21).html()?.split('<br>')[0]?.trim().split('/')[1]!),
+
+            flick: util.trimToNumber($collapsed.children("div").eq(21).html()?.split('<br>')[1]?.trim().split('/')[0]!),
+            flickMax: util.trimToNumber($collapsed.children("div").eq(21).html()?.split('<br>')[1]?.trim().split('/')[1]!),
+
+            fader: util.trimToNumber($collapsed.children("div").eq(21).html()?.split('<br>')[2]?.trim().split('/')[0]!),
+            faderMax: util.trimToNumber($collapsed.children("div").eq(21).html()?.split('<br>')[2]?.trim().split('/')[1]!),
+
+            honeycomb: util.trimToNumber($collapsed.children("div").eq(21).html()?.split('<br>')[3]?.trim().split('/')[0]!),
+            honeycombMax: util.trimToNumber($collapsed.children("div").eq(21).html()?.split('<br>')[3]?.trim().split('/')[1]!),
+        },
+
+        playTimestampString: $main.children('td').eq(6).find('small').text().trim(),
+        arcadePlayedAtString: $collapsed.find("div:contains('Played at') > a").text().replace('Played at', '').trim(),
+        arcadePlayedAtID: util.trimToNumber($collapsed.find("div:contains('Played at') > a").attr('href')?.split('/').pop()!),
+
+        extraData: {
+            likes: util.trimToNumber($main.children('td').eq(5).find('b').text().trim()),
+            likesGrade: $main.children('td').eq(5).contents().last().text().trim(),
+        },
+
+        onPage: pageIndex,
+    };
+
+    return rawData;
 }

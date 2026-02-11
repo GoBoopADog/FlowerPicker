@@ -51,6 +51,7 @@ The following games may not be updated by me, PRs may be reviewed and accepted
 | Sound Voltex                    |     ❌     |      ❌       |
 | beatmania IIDX                  |     ❌     |      ❌       |
 | NOSTALGIA                       |     ✅     |      -       |
+| Polaris Chord                   |     ✅     |      -       |
 | REFLEC BEAT                     |     ❌     |      -       |
 | DANCERUSH STARDOM               |     ❌     |      -       |
 | PASELI Charging Machine (Soon™️) |     ❌     |      ❌       |

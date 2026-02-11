@@ -13,7 +13,6 @@ interface BaseDataRawJSON {
     playTimestampString: string
     arcadePlayedAtString: string
     arcadePlayedAtID: number
-    versionPlayedOnString: string
 
     onPage: number
 }
@@ -33,6 +32,8 @@ export interface JubeatDataRawJSON extends BaseDataRawJSON {
     }
 
     playJudgeBar: number[]
+
+    versionPlayedOnString: string
 }
 
 export interface PnmDataRawJSON extends BaseDataRawJSON {
@@ -46,6 +47,8 @@ export interface PnmDataRawJSON extends BaseDataRawJSON {
         good: number
         bad: number
     }
+
+    versionPlayedOnString: string
 }
 
 export interface MusecaDataRawJSON extends BaseDataRawJSON {
@@ -58,6 +61,8 @@ export interface MusecaDataRawJSON extends BaseDataRawJSON {
         near: number
         error: number
     }
+
+    versionPlayedOnString: string
 }
 
 export interface GitadoraDataRawJSON extends BaseDataRawJSON {
@@ -78,6 +83,8 @@ export interface GitadoraDataRawJSON extends BaseDataRawJSON {
     }
 
     playJudgeBar: number[]
+
+    versionPlayedOnString: string
 }
 
 export interface NostalgiaDataRawJSON extends BaseDataRawJSON {
@@ -91,6 +98,8 @@ export interface NostalgiaDataRawJSON extends BaseDataRawJSON {
         fast: number;
         slow: number;
     }
+
+    versionPlayedOnString: string
 }
 
 export interface DDRDataRawJSON extends BaseDataRawJSON {
@@ -108,4 +117,61 @@ export interface DDRDataRawJSON extends BaseDataRawJSON {
         ng: number;
         miss: number;
     }
+
+    versionPlayedOnString: string
+}
+
+export interface PocoDataRawJSON extends BaseDataRawJSON {
+    playLamp: string;
+    playMaxCombo: number;
+    playComboRank: string;
+
+    playScoreJudgements: {
+        perfect: number;
+        great: number;
+        good: number;
+        bad: number;
+        miss: number;
+    };
+
+    playJudgeBreakdown: {
+        fastBad: number;
+        fastBadPercent: number;
+
+        fastGood: number;
+        fastGoodPercent: number;
+
+        fastGreat: number;
+        fastGreatPercent: number;
+
+        perfect: number;
+        perfectPercent: number;
+
+        slowGreat: number;
+        slowGreatPercent: number;
+
+        slowGood: number;
+        slowGoodPercent: number;
+
+        slowBad: number;
+        slowBadPercent: number;
+
+
+        hold: number;
+        holdMax: number;
+
+        flick: number;
+        flickMax: number;
+
+        fader: number;
+        faderMax: number;
+
+        honeycomb: number;
+        honeycombMax: number;
+    }
+
+    extraData: {
+        likes: number;
+        likesGrade: string;
+    };
 }

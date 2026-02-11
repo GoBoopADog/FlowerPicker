@@ -3,7 +3,7 @@ import * as parser from "./parser.js";
 import * as error from "./types/errors.js";
 import * as util from "./util.js";
 
-const GAMES = ['iidx', 'jubeat', 'rb', 'gitadora', 'sdvx', 'museca', 'ddr', 'nostalgia', 'pnm'] as const;
+const GAMES = ['iidx', 'jubeat', 'rb', 'gitadora', 'sdvx', 'museca', 'ddr', 'nostalgia', 'pnm', 'poco'] as const;
 type Game = typeof GAMES[number];
 type ScoreForGame<G extends Game> =
     G extends "jubeat" ? ReturnType<typeof parser.parseJubeatScoreData> :
@@ -12,6 +12,7 @@ type ScoreForGame<G extends Game> =
     G extends "gitadora" ? ReturnType<typeof parser.parseGitadoraScoreData> :
     G extends "nostalgia" ? ReturnType<typeof parser.parseNostalgiaScoreData> :
     G extends "ddr" ? ReturnType<typeof parser.parseDDRScoreData> :
+    G extends "poco" ? ReturnType<typeof parser.parsePocoScoreData> :
     never;
 
 class FlowerPicker {
@@ -78,7 +79,7 @@ class FlowerPicker {
     }
 
     /**
-     * @param game The game to fetch scores from (MUST match ['iidx', 'jubeat', 'rb', 'gitadora', 'sdvx', 'museca', 'ddr', 'nostalgia', 'pnm'])
+     * @param game The game to fetch scores from (MUST match ['iidx', 'jubeat', 'rb', 'gitadora', 'sdvx', 'museca', 'ddr', 'nostalgia', 'pnm', 'poco'])
      * @param profileID The profile ID to fetch from
      * @param fetchDownTo Millisecond timestamp of the last score you want to fetch (inclusive)
     */
@@ -99,7 +100,7 @@ class FlowerPicker {
 
         if (fetchDownTo > 0) { console.log(`Fetching ${profileID}'s ${game} scores down to timestamp: ${new Date(fetchDownTo).toISOString()}`) } else { console.log(`Fetching all of ${profileID}'s ${game} scores without a down-to limit.`); }
 
-        let url = `${this.baseURL}/game/${game}${util.doesGameHaveProfileInUrl(game) ? '/profile' : ''}/${profileID}?page=`;
+        let url = `${this.baseURL}${util.doesGameHaveGameInUrl(game) ? '/game' : ''}/${game}${util.doesGameHaveProfileInUrl(game) ? '/profile' : ''}/${profileID}?page=`;
         const firstFetchedPage = await this.fetchWithCookie(`${url}1`)
         const firstFullPage = await firstFetchedPage.text();
         const first$ = cheerio.load(firstFullPage);
@@ -135,6 +136,12 @@ class FlowerPicker {
                     continue;
                 }
 
+                // Blank divider
+                if ($(element).attr('style') === 'background-color:#ddd' || $(elementCollapsed).attr('style') === 'background-color:#ddd') {
+                    index -= 1;
+                    continue;
+                }
+
                 switch (game) {
                     case "jubeat":
                         score = parser.parseJubeatScoreData(element, elementCollapsed, pageIndex) as ScoreForGame<G>;
@@ -153,6 +160,9 @@ class FlowerPicker {
                         break;
                     case "nostalgia":
                         score = parser.parseNostalgiaScoreData(element, elementCollapsed, pageIndex) as ScoreForGame<G>;
+                        break;
+                    case "poco":
+                        score = parser.parsePocoScoreData(element, elementCollapsed, pageIndex) as ScoreForGame<G>;
                         break;
                     default:
                         throw new Error(`Parser not implemented for game "${game}".`);
@@ -187,6 +197,6 @@ export default FlowerPicker;
 export * as convert from "./convert.js";
 
 export * as convertTypes from "./types/convert.js";
-export * as scorelogJsonTypes from "./types/scorelogJson.js";
 export * as errorTypes from "./types/errors.js";
+export * as scorelogJsonTypes from "./types/scorelogJson.js";
 // export * as util from "./util";
